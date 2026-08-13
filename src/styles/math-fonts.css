@@ -1,0 +1,84 @@
+/**
+ * Latin Modern Math Upright Font Declarations
+ * Custom font with upright integral symbols for improved mathematical typesetting
+ *
+ * These fonts are bundled with the library - webpack will inline them as base64
+ */
+
+@font-face {
+  font-family: 'Latin Modern Math Upright';
+  src: url('../assets/fonts/latinmodern-math-upright.woff2') format('woff2'),
+       url('../assets/fonts/latinmodern-math-upright.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  ascent-override: 50%;
+  descent-override: 0%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Latin Modern Roman';
+  src: url('../assets/fonts/lmroman10-regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Latin Modern Sans';
+  src: url('../assets/fonts/lmsans10-regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Latin Modern Mono';
+  src: url('../assets/fonts/lmmono10-regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Root font-family for all lme-rendered math */
+.lme {
+  font-family: 'Latin Modern Math Upright',
+               'Times New Roman',
+               serif !important;
+  font-size: 1.21em;
+}
+
+/* Force MathML inside lme to also use it */
+.lme math {
+  font-family: 'Latin Modern Math Upright',
+               'Times New Roman',
+               serif !important;
+}
+
+/* CSS custom properties for easy font switching */
+:root {
+  --math-font-upright: 'Latin Modern Math Upright', 'Times New Roman', serif;
+  --math-font-roman: 'Latin Modern Roman', 'Times New Roman', serif;
+  --math-font-sans: 'Latin Modern Sans', Arial, sans-serif;
+  --math-font-mono: 'Latin Modern Mono', 'Courier New', monospace;
+}
+
+/* Utility classes for selective application */
+.math-upright-integrals {
+  font-family: var(--math-font-upright);
+}
+
+.math-upright-integrals .lme {
+  font-family: var(--math-font-upright);
+}
+
+.math-upright-integrals .lme .main {
+  font-family: var(--math-font-upright);
+}
+
+/* Specific targeting for integral symbols */
+.math-upright-integrals .lme .mord.mathdefault,
+.math-upright-integrals .lme .mop {
+  font-family: var(--math-font-upright);
+}

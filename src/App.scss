@@ -1,0 +1,19 @@
+.vieta-math-app {
+  display:  initial;
+}
+
+.latex-preview-sidebar {
+  position: sticky;
+  top: 2rem;
+  height: calc(100vh - 4rem);
+
+  @media (max-width: 768px) {
+    position: static;
+    height: auto;
+  }
+}
+
+/* Default: app visible, warning hidden */
+.viewport-warning {
+  display: none;
+}

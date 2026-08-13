@@ -1,0 +1,13 @@
+VietaMath
+Copyright (c) 2026 Liam Hawtin
+
+The LaTeX math engine is derived from KaTeX 0.16.18 and contains extensive
+changes made for interactive MathML editing.
+
+KaTeX
+Copyright (c) 2013-2020 Khan Academy and other contributors
+Licensed under the MIT License. See THIRD_PARTY_LICENSES.md.
+
+The bundled fonts include Latin Modern fonts and a modified Latin Modern Math
+font. The modified math font contains selected glyphs derived from Libertinus
+Math. See THIRD_PARTY_LICENSES.md for copyright and license information.

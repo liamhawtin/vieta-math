@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: #172033; }
+main { max-width: 900px; margin: 3rem auto; padding: 0 1rem; }
+.editor { min-height: 96px; padding: 1.25rem; border: 1px solid #b8c0cc; border-radius: 8px; }
+button { margin: 1rem 0; padding: 0.6rem 0.9rem; }
+pre { min-height: 2.5rem; padding: 0.75rem; background: #f4f6f8; overflow-wrap: anywhere; white-space: pre-wrap; }

@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: #172033; }
+main { max-width: 900px; margin: 3rem auto; padding: 0 1rem; }
+#editor { min-height: 180px; padding: 1rem; border: 1px solid #b8c0cc; border-radius: 8px; }
+.ProseMirror { min-height: 140px; outline: none; }
+kbd { padding: 0.1rem 0.35rem; border: 1px solid #b8c0cc; border-radius: 4px; }

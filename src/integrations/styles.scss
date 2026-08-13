@@ -1,0 +1,141 @@
+@mixin math-node-selection-theme($mode) {
+  --selection-color: Highlight;
+  --selection-text-color: HighlightText;
+
+  @if $mode == light {
+    --selection-unfocused-color: rgba(0, 0, 0, 0.225);
+    --selection-unfocused-text-color: HighlightText;
+
+    --fake-caret-color: #1a1a1a;
+
+    @supports not (-moz-appearance: none) {
+      --selection-unfocused-text-color: #393939;
+    }
+
+    /* Safari */
+    @supports (-webkit-nbsp-mode: space) {
+      --selection-unfocused-color: rgba(0, 0, 0, 0.13);
+      --selection-text-color: inherit;
+    }
+  } @else {
+    --selection-unfocused-color: rgba(256, 256, 256, 0.68);
+    --selection-unfocused-text-color: HighlightText;
+
+    --fake-caret-color: #e8e8e8;
+
+    /* Chrome dark */
+    @supports not (-moz-appearance: none) {
+      --selection-unfocused-color: rgba(255, 255, 255, 0.375);
+      --selection-unfocused-text-color: #393939;
+    }
+
+    /* Safari dark */
+    @supports (-webkit-nbsp-mode: space) {
+      --selection-unfocused-color: rgba(255, 255, 255, 0.46);
+      --selection-text-color: inherit;
+      --selection-unfocused-text-color: inherit;
+    }
+  }
+}
+
+/* Default */
+.ProseMirror {
+  @include math-node-selection-theme(light);
+}
+
+/* System dark */
+@media (prefers-color-scheme: dark) {
+  .ProseMirror {
+    @include math-node-selection-theme(dark);
+  }
+}
+
+/* Explicit overrides */
+[data-theme="light"] .ProseMirror {
+  @include math-node-selection-theme(light);
+}
+
+[data-theme="dark"] .ProseMirror {
+  @include math-node-selection-theme(dark);
+}
+
+.ProseMirror {
+
+  -webkit-user-select: text;
+  user-select: text;
+  overflow-x: clip;
+
+  &.pm-hide-caret {
+    caret-color: transparent !important;
+  }
+
+  ul,
+  ol {
+    padding-left: 30px;
+    list-style-type: initial;
+  }
+
+  blockquote {
+    padding-left: 1em;
+    border-left: 3px solid #eee;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  img.ProseMirror-separator {
+    display: inline;
+  }
+
+  .pm-vieta-math-wrapper {
+    @supports not (-moz-appearance: none) {
+      display: inline-flex;
+    }
+  }
+
+  .pm-vieta-math-wrapper.vm-selected {
+    .pm-vieta-math-mount {
+      background-color: var(--selection-unfocused-color);
+      color: var(--selection-unfocused-text-color);
+    }
+  }
+
+  &.ProseMirror-focused {
+    .pm-vieta-math-wrapper.vm-selected {
+      .pm-vieta-math-mount {
+        background-color: var(--selection-color);
+        color: var(--selection-text-color);
+      }
+    }
+  }
+
+  .pm-vieta-math-mount {
+    display: inline-flex;
+
+    @supports (-moz-appearance: none) {
+      min-height: 2.1em;
+    }
+  }
+
+  @keyframes blink {
+    0% {
+      border-left-color: currentColor;
+    }
+    50% {
+      border-left-color: transparent;
+    }
+  }
+
+}
+
+@supports (-moz-appearance: none) {
+  .ProseMirror-focused {
+    br + .pm-vieta-math-wrapper,
+    .pm-vieta-math-wrapper:first-child,
+    .pm-vieta-math-wrapper + .pm-vieta-math-wrapper {
+      &.fake-caret:not(:has(.math-cursor)) {
+        border-left: 1px solid var(--fake-caret-color);
+        animation: blink 2s steps(1, end) infinite;
+      }
+    }
+  }
+}

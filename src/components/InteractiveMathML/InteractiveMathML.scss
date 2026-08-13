@@ -1,0 +1,652 @@
+@use "sass:map";
+
+$mm-theme: (
+  light: (
+    text: #000,
+    caret: #004288,
+
+    overlay-weak: rgba(0, 0, 0, 0.01),
+    overlay-light: rgba(0, 0, 0, 0.1),
+    overlay-medium: rgba(0, 0, 0, 0.18),
+    overlay-strong: rgb(255, 196, 0),
+
+    border-weak: rgba(0, 0, 0, 0.1),
+    border-medium: rgba(0, 0, 0, 0.18),
+    border-strong: rgba(0, 0, 0, 0.3),
+
+    delimiter-active-border: #000,
+
+    accent: rgba(0, 123, 255, 0.1),
+    danger: rgba(255, 0, 0, 0.3),
+    warning: rgb(234 149 0),
+
+    selection: rgba(0, 123, 255, 0.2),
+    loading-bg: rgba(255, 255, 255, 0.7),
+  ),
+
+  dark: (
+    text: #e6e6e6,
+    caret: #6aa8ff,
+
+    overlay-weak: rgba(255, 255, 255, 0.04),
+    overlay-light: rgba(255, 255, 255, 0.12),
+    overlay-medium: rgba(255, 255, 255, 0.18),
+    overlay-strong: rgb(255, 196, 0),
+
+    border-weak: rgba(255, 255, 255, 0.15),
+    border-medium: rgba(255, 255, 255, 0.22),
+    border-strong: rgba(255, 255, 255, 0.35),
+
+    delimiter-active-border: #fff,
+
+    accent: rgba(106, 168, 255, 0.25),
+    danger: rgba(255, 120, 120, 0.45),
+    warning: rgb(234 149 0),
+
+    selection: rgba(106, 168, 255, 0.35),
+    loading-bg: rgba(0, 0, 0, 0.6),
+  )
+);
+
+@mixin mm-map-theme($mode) {
+  @each $key, $value in map.get($mm-theme, $mode) {
+    --mm-#{$key}: #{$value};
+  }
+}
+
+.vieta-root .interactive-mathml {
+  @include mm-map-theme(light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .vieta-root .interactive-mathml {
+    @include mm-map-theme(dark);
+  }
+}
+
+[data-theme="light"] .vieta-root .interactive-mathml {
+  @include mm-map-theme(light);
+}
+
+[data-theme="dark"] .vieta-root .interactive-mathml {
+  @include mm-map-theme(dark);
+}
+
+.interactive-mathml {
+  display: initial;
+  position: relative;
+  width: 100%;
+  background: transparent;
+  cursor: text;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  transition: transform 0.2s ease, transform-origin 0.2s ease, background-color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  overflow-x: visible;
+  white-space: nowrap;
+  caret-color: transparent !important;
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10+ */
+
+  scrollbar-width: thin;
+
+  &,
+  * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    caret-color: transparent !important;
+
+    &::selection {
+      background: transparent;
+      color: inherit;
+    }
+
+    &::-moz-selection {
+      background: transparent;
+      color: inherit;
+    }
+  }
+
+  // Unfocused: caret is solid and visible
+  .math-cursor {
+    animation: none !important;
+    color: var(--mm-caret);
+  }
+
+  // Focused: caret blinks
+  &:focus-within {
+    .math-cursor {
+      animation: caret-blink 1s step-end infinite !important;
+    }
+  }
+
+  // Alright I commented out display block.
+  // Because it solves the safari glitch where it makes
+  // it auto scroll to the top.
+  // But I know I keep disabling and re-enabling display: block;
+  // But I can't remember the reasons. So I'll start writing them down.
+  .caret-target {
+    //display: block;
+    height: 0;
+    width: 0;
+    font-size: 0;
+  }
+
+  &::selection {
+    background: transparent;
+  }
+
+  .updating {
+    background-color: transparent;
+    opacity: 0.8;
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
+
+  .mathml-scroll-content {
+    position: relative;
+    display: initial;
+    user-select: none;
+  }
+
+  semantics {
+    display: block;
+    &:not(:has(.hover-highlight)):not(:has(.math-cursor, .selected, .to-remove, .active)) {
+      .affordance {
+        opacity: 0;
+      }
+    }
+    > mrow {
+      &:not(.active):has(.math-cursor, .selected, .to-remove, .active, .hover-highlight) {
+        border-radius: 2px;
+        outline-style: solid;
+        outline-width: 1px;
+        outline-color: var(--mm-border-weak);
+      }
+      &:has(> mi.affordance) {
+        border-radius: 2px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: var(--mm-border-medium);
+        > mi.affordance {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+
+  // Make MathML elements interactive
+  math {
+    .ghost-base {
+      margin-right: 0;
+    }
+    [form="prefix"] {
+      margin: 0;
+    }
+
+    .text:has(.math-cursor, .selected) {
+      background-color: var(--mm-overlay-light);
+    }
+
+    .delimiter-wrapper > mo,
+    mo[fence="true"] {
+      &[data-delim="["]{
+        margin-left: -0.2em;
+      }
+      &[data-delim="]"] {
+        margin-right: -0.2em;
+      }
+      @supports not (-moz-appearance: none) {
+        &[data-delim="("] {
+          margin-left: -0.1em;
+        }
+        &[data-delim=")"] {
+          margin-right: -0.1em;
+        }
+      }
+    }
+
+    // x arrows
+    mover > mo[stretchy="true"]:first-child + mpadded > mrow {
+      margin-bottom: 0;
+    }
+
+    mrow {
+
+      > .math-cursor:first-child {
+        margin-left: var(--cursor-gap);
+      }
+      > .math-cursor:last-child {
+        margin-right: var(--cursor-gap);
+      }
+      margin: 0.05em;
+      // Ensure all children inherit the margin
+      * {
+        margin: inherit;
+      }
+      mi, mn {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      // Reset margin for nested <mrow> elements
+      mrow {
+        margin: 0.05em;
+      }
+
+      &:has(> mi.affordance) {
+        &.hover-highlight {
+          mi.affordance {
+            opacity: 0;
+          }
+        }
+      }
+
+    }
+    * {
+      cursor: text;
+      line-height: 1;
+
+      .hover-highlight:not(.active) {
+        border-radius: 2px;
+        outline-style: solid;
+        outline-width: 1px;
+        outline-color: var(--mm-border-medium);
+      }
+
+      .active {
+        background-color: var(--mm-overlay-weak);
+        border-radius: 2px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: var(--mm-border-strong);
+        padding-right: 5px;
+      }
+
+      .is-valid-injection {
+        background-color: var(--mm-accent);
+        border-radius: 2px;
+        transition: background-color 0.15s ease;
+      }
+
+      msqrt > mrow {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      msup > [data-range-start],
+      msub > [data-range-start],
+      msubsup > [data-range-start] {
+          padding: 0px;
+          margin-right: 0;
+          margin-left: 0;
+      }
+      msup > [data-range-start]:not(:first-child),
+      msub > [data-range-start]:not(:first-child),
+      msubsup > [data-range-start]:not(:first-child),
+      mover > [data-range-start]:not(:first-child),
+      munder > [data-range-start]:not(:first-child),
+      munderover > [data-range-start]:not(:first-child) {
+          padding: 0.1px; // Needed for some reason to click if there is a single item inside
+      }
+      msup,
+      msub,
+      msubsup {
+        @supports (-webkit-appearance: none) and (not (-moz-appearance: none)) {
+          margin-left: 0.1em;
+        }
+        margin-left: 0;
+        &:has(> mo.ghost-base:first-child) {
+          margin-right: 0.1667em;
+        }
+      }
+
+      // Can be slow
+      *:has(+ msub),
+      *:has(+ msup),
+      *:has(+ msubsup) {
+        padding-right: 0;
+        margin-right: 0;
+      }
+      &[data-range-start] {
+        position: relative;
+      }
+
+    }
+    msup:has(> [data-function]:first-child),
+    msub:has(> [data-function]:first-child),
+    munder:has(> [data-function]:first-child),
+    mover:has(> [data-function]:first-child) {
+      & + * {
+        padding-left: 0px;
+      }
+    }
+    mover {
+      margin-top: 0.05em;
+      > mrow {
+        padding: 0;
+        margin: 0;
+      }
+    }
+    munder, munderover {
+      > mrow {
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    munderover:where(:has(> [data-function]):has(> :nth-child(2) > .affordance):has(> :nth-child(3) > .affordance)) {
+      > mrow:has(> .affordance:only-child) {
+        position: absolute;
+        display: none;
+      }
+    }
+
+    // Seems to be necessary on firefox to collapse height of empty under scripts.
+    // Seems to make the worse on chrome.
+    @supports (-moz-appearance: none) {
+      munderover:has(> [data-function]):has(> mrow:nth-child(2) > .affordance:only-child):not(:has(> mrow:nth-child(3) > .affordance:only-child)) {
+        > mrow:nth-child(2) > .affordance {
+          display: none;
+        }
+      }
+    }
+
+    // check this on firefox, and safari too
+    munderover:has(> [data-function]) {
+      > mrow:nth-child(2):has(> .affordance:only-child) {
+        visibility: hidden;
+        height: 0;
+        pointer-events: none;
+      }
+      > mrow:nth-child(3):has(> .affordance:only-child) {
+        > .affordance {
+          display: none;
+        }
+      }
+    }
+
+    munderover:has(.math-cursor, .selected, .to-remove) {
+      > mrow:has(> .affordance:only-child) {
+        position: inherit;
+        display: inherit;
+      }
+    }
+
+    // If is an operator and both scripts are empty then hide both.
+    // (where just makes it less specific so that the next selector can actually override it)
+    msubsup:where(:has(> [data-function]):has(> :nth-child(2) > .affordance):has(> :nth-child(3) > .affordance)) {
+      > mrow > .affordance {
+        display: none;
+      }
+    }
+    .math-cursor + msubsup:has(> [data-function]),
+    msubsup:has(> [data-function]):has(+ .math-cursor),
+    msubsup:has(.math-cursor, .selected, .to-remove) {
+      > mrow > .affordance {
+        display: inherit;
+      }
+    }
+    mpadded {
+      margin: 0px;
+      &.no-width {
+        background-color: transparent;
+        mphantom {
+          width: 0px;
+          transform: scale(0, 1);
+          transform-origin: bottom left;
+          transition: transform 0.3s ease;
+        }
+        &:has(+ .math-cursor),
+        &:has(.math-cursor),
+        &:has(.selected),
+        &:has(.to-remove),
+        &.selected,
+        &.marked,
+        &.to-remove {
+          transition: none !important;
+          mphantom {
+            visibility: visible;
+            opacity: 50%;
+            transform: scale(1, 1);
+            width: unset;
+          }
+        }
+      }
+      &[height="0px"][depth="0px"] {
+        mphantom {
+          visibility: visible;
+          opacity: 50%;
+          transform: scale(1, 0);
+          transform-origin: bottom left;
+          transition: transform 0.3s ease;
+        }
+        &:has(+ .math-cursor),
+        &:has(.math-cursor),
+        &:has(.selected),
+        &:has(.to-remove),
+        &.selected,
+        &.marked,
+        &.to-remove {
+          transition: none !important;
+          mphantom {
+            visibility: visible;
+            transform: scale(1, 1);
+            opacity: 50%;
+            height: 1em;
+          }
+        }
+      }
+    }
+    mphantom {
+      margin: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      &:has(+ .math-cursor),
+      &:has(.math-cursor),
+      &:has(.selected),
+      &:has(.to-remove),
+      &.selected,
+      &.marked,
+      &.to-remove {
+        transition: none !important;
+        opacity: 0.5;
+        visibility: visible;
+      }
+    }
+    mstyle, mphantom {
+      &:only-child {
+        margin: 0;
+        padding: 0;
+
+        > mrow:only-child {
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      > mrow:only-child {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    mspace {
+      margin-left: 0;
+      margin-right: 0;
+      transition: background-color 0.3s ease;
+      border-radius: 3px;
+
+      &[width="0em"] {
+        background-color: #1eff009f;
+      }
+
+      &:has(+ .math-cursor),
+      &:hover {
+        background-color: var(--mm-overlay-medium);
+        &.neg-width {
+          margin-left: 0 !important;
+        }
+      }
+    }
+
+    .math-cursor + mspace {
+      background-color: var(--mm-overlay-medium);
+      &.neg-width {
+        margin-left: 0 !important;
+      }
+    }
+
+    mspace.neg-width.marked + * {
+      border-left: 1px solid var(--mm-warning);
+    }
+
+    mpadded:has(> mspace[width="0em"]).marked {
+      transition: background-color 0;
+      background-color: var(--mm-overlay-medium);
+      width: 4px;
+      margin-right: -4px;
+      > mspace {
+        width: 4px;
+      }
+    }
+
+    .math-cursor + mpadded {
+      transition: background-color 0;
+      &[height] {
+        background-color: var(--mm-overlay-medium);
+      }
+      > mspace[width="0em"] {
+        width: 4px;
+      }
+      &:has(> mspace.neg-width) {
+        width: 4px;
+        background-color: var(--mm-danger);
+      }
+    }
+
+    mpadded:has(+ .math-cursor) {
+      transition: background-color 0;
+      &[height] {
+        background-color: #0000001e;
+      }
+      > mspace[width="0em"] {
+        width: 4px;
+      }
+      &:has(> mspace.neg-width) {
+        width: 4px;
+        background-color: var(--mm-danger);
+      }
+    }
+
+    mrow:not(.selected) {
+      mspace.selected {
+        &.neg-width {
+          width: 8px;
+          background-color: var(--mm-danger);
+          margin-left: 0 !important;
+        }
+      }
+    }
+    mrow:not(.to-remove) {
+      mspace.to-remove {
+        &.neg-width {
+          width: 8px;
+          background-color: var(--mm-danger);
+          margin-left: 0 !important;
+        }
+      }
+    }
+    mrow.delimited-group:has(> .math-cursor) {
+      > mo[fence="true"] {
+        color: rgb(185, 144, 24);
+      }
+    }
+
+    mrow.delimited-group {
+      padding: 0;
+      margin: 0;
+      &.active {
+        border-color: rgb(213, 178, 0, 0.5);
+      }
+    }
+
+    mtable::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: 0;
+      pointer-events: none;
+      border: 1px solid var(--mm-border-medium);
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    /* Activate when hovered, or mtable contains the relevant class */
+    mtable:has(.math-cursor):not(mtable:has(mtable .math-cursor))::after,
+    mtable:has(.hover-highlight)::after,
+    mtable:has(.hover-highlight) mtable::after {
+      opacity: 1;
+    }
+
+    mtable {
+      mtr {
+        mtd {
+          mrow {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 0;
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes caret-blink {
+  0%,49%   { color: var(--mm-caret); }
+  50%,100% { color: transparent; }
+}
+
+// Selection styles
+.math-selection {
+  position: absolute;
+  background-color: var(--mm-selection);
+  pointer-events: none;
+  z-index: 999;
+}
+
+// Loading indicator styles
+.loading-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--mm-loading-bg);
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

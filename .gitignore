@@ -1,0 +1,9 @@
+data/symbolpad-data.json
+data/default-symbols.json
+
+node_modules/
+dist/
+examples/*/dist/
+*.tgz
+.DS_Store
+katex-dist/

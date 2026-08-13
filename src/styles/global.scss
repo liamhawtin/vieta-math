@@ -1,0 +1,836 @@
+@use "sass:map";
+
+$vieta-theme: (
+  light: (
+    bg-primary: #ffffff,
+    bg-secondary: #f8f9fa,
+    bg-tertiary: #f1f3f5,
+    bg-hover: #f0f0f0,
+
+    text-primary: #212529,
+    text-secondary: #6c757d,
+    text-tertiary: #adb5bd,
+    text-disabled: #c0c4c7,
+
+    border-color: #dee2e6,
+    border-light: #e9ecef,
+    border-medium: #ced4da,
+
+    shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1),
+    shadow-medium: 0 0 8px rgba(0, 0, 0, 0.1),
+    shadow-large: 0 4px 20px rgba(0, 0, 0, 0.12),
+
+    math-select-fill: rgba(0, 123, 255, 0.12),
+    math-select-stroke: rgba(0, 123, 255, 0.55),
+
+    math-remove-fill: rgba(255, 0, 0, 0.12),
+    math-remove-stroke: rgba(255, 0, 0, 0.55),
+  ),
+
+  dark: (
+    bg-primary: #0f1113,
+    bg-secondary: #16191c,
+    bg-tertiary: #1e2226,
+    bg-hover: #22272c,
+
+    text-primary: #e6e6e6,
+    text-secondary: #b5b9bd,
+    text-tertiary: #8b9197,
+    text-disabled: #5f656b,
+
+    border-color: rgba(255, 255, 255, 0.15),
+    border-light: rgba(255, 255, 255, 0.08),
+    border-medium: rgba(255, 255, 255, 0.25),
+
+    shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.6),
+    shadow-medium: 0 0 8px rgba(0, 0, 0, 0.6),
+    shadow-large: 0 4px 20px rgba(0, 0, 0, 0.75),
+
+    math-select-fill: rgba(0, 123, 255, 0.4),
+    math-select-stroke: rgba(0, 123, 255, 0.25),
+
+    math-remove-fill: rgba(255, 0, 0, 0.4),
+    math-remove-stroke: rgba(255, 0, 0, 0.25),
+  )
+);
+
+@mixin vieta-map-theme($mode) {
+  @each $key, $value in map.get($vieta-theme, $mode) {
+    --#{$key}: #{$value};
+  }
+}
+
+.vieta-root {
+  @include vieta-map-theme(light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .vieta-root {
+    @include vieta-map-theme(dark);
+  }
+}
+
+[data-theme="light"] .vieta-root {
+  @include vieta-map-theme(light);
+}
+
+[data-theme="dark"] .vieta-root {
+  @include vieta-map-theme(dark);
+}
+
+.vieta-root {
+  // Vieta Space Brand Colors
+  --brand-primary: #405d63;        // Main brand color (dark teal)
+  --brand-primary-rgb: 64, 93, 99;
+  --brand-secondary: #55747c;      // Secondary brand color
+  --brand-tertiary: #759ea4;       // Tertiary brand color
+  --brand-light: #99b2b3;          // Light brand color
+  --brand-lightest: #a7c2c8;       // Lightest brand color
+
+  --accent-color: var(--brand-primary);
+  --accent-color-rgb: var(--brand-primary-rgb);
+  --accent-hover: var(--brand-secondary);
+  --accent-light: var(--brand-tertiary);
+
+  // Interactive states
+  --hover-bg: rgba(var(--brand-primary-rgb), 0.1);
+  --active-bg: rgba(var(--brand-primary-rgb), 0.15);
+
+  // Status colors
+  --success-color: #28a745;
+  --success-color-rgb: 40, 167, 69;
+  --warning-color: #ffc107;
+  --warning-color-rgb: 255, 193, 7;
+  --error-color: #dc3545;
+  --error-color-rgb: 220, 53, 69;
+  --info-color: var(--brand-tertiary);
+  --info-color-rgb: 117, 158, 164;
+
+  // Border radius system
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  // Spacing system
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  // Typography system - Enhanced with smaller sizes
+  --font-size-2xs: 0.625rem;     // 10px - Very small UI text
+  --font-size-xs: 0.6875rem;     // 11px - Small UI text (reduced from 12px)
+  --font-size-s: 0.75rem;     // 11px - Small UI text (reduced from 13px)
+  --font-size-sm: 0.8125rem;     // 13px - Standard UI text (reduced from 14px)
+  --font-size-base: 0.9375rem;   // 15px - Base text (reduced from 16px)
+  --font-size-lg: 1.0625rem;     // 17px - Large text (reduced from 18px)
+  --font-size-xl: 1.1875rem;     // 19px - XL text (reduced from 20px)
+  --font-size-2xl: 1.375rem;     // 22px - 2XL text (reduced from 24px)
+  --font-size-3xl: 1.75rem;      // 28px - 3XL text (reduced from 32px)
+
+  // UI-specific font sizes (even smaller for interface elements)
+  --font-size-ui-2xs: var(--font-size-2xs);
+  --font-size-ui-xs: var(--font-size-xs);
+  --font-size-ui-sm: var(--font-size-sm);
+  --font-size-ui-base: var(--font-size-base);
+
+  // Math content font sizes (preserve for mathematical accuracy)
+  --font-size-math-sm: 0.875rem;   // 14px
+  --font-size-math-base: 1rem;     // 16px
+  --font-size-math-lg: 1.25rem;    // 20px
+  --font-size-math-xl: 1.5rem;     // 24px
+
+  // Icon sizing system
+  --icon-size-xs: 10px;
+  --icon-size-sm: 12px;
+  --icon-size-md: 14px;
+  --icon-size-lg: 16px;
+  --icon-size-xl: 18px;
+  --icon-size-2xl: 20px;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  --space-rel:   0.2778em;
+  --space-bin:   0.2222em;
+  --space-punct: 0.1667em;
+  --space-op: 0.1667em;
+  --space-open:  0em;
+  --space-close: 0em;
+  --space-inner: 0.0556em;
+
+  // Logo sizing variables
+  --logo-height: 50px;
+
+  // Layout variables
+  --header-height: 60px;
+
+  // Animation durations
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  // Animation easings
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  @supports (-webkit-nbsp-mode: space) {
+    .lme {
+      vertical-align: middle;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  // Reset some common classnames with common styling
+  .overline {
+    text-decoration-line: none;
+    -webkit-text-decoration-line: none;
+  }
+
+
+  mi.affordance {
+    //transition: opacity 0.1s ease;
+    opacity: 0.5;
+    margin: 0.1em;
+    filter: drop-shadow(0 0 0.8px rgba(0, 64, 255, 0.75));
+  }
+
+  mrow {
+    &:not(:has(> mi.affordance:only-child)) {
+      > mi.affordance {
+        display: none;
+      }
+    }
+    &.active {
+      > mi.affordance {
+        opacity: 0;
+      }
+    }
+  }
+
+  // lme + math should make sure
+  // we override everything
+  .lme math {
+
+    /* Operator atom (sin, cos, log, etc.) */
+    mi[data-function] {
+      /* default spacing */
+      margin-left: var(--space-op);
+      margin-right: var(--space-op);
+
+      /* no left spacing at start of the row */
+      &:first-child {
+        margin-left: 0;
+      }
+
+      /* no right spacing at end of the row */
+      &:last-child {
+        margin-right: 0;
+      }
+
+      /* no right spacing before opening delimiters */
+      &:has(+ mo) {
+        margin-right: 0;
+      }
+
+      /* no right spacing before scripts */
+      &:has(+ msub),
+      &:has(+ msup),
+      &:has(+ msubsup) {
+        margin-right: 0;
+      }
+    }
+
+    mi[data-function] + mi[data-function] {
+      margin-left: 0;
+    }
+
+    menclose {
+      &[notation="bottom"] {
+        > mrow {
+          margin: 0 -0.15em;
+          > * {
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    [data-type="rel"] {
+      margin-left: var(--space-rel);
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-rel);
+      }
+    }
+
+    [data-type="bin"] {
+      margin-left: var(--space-bin);
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-bin);
+      }
+    }
+
+    [data-type="punct"] {
+      margin-left: var(--space-open); /* left 0 for punctuation */
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-punct);
+      }
+    }
+
+    [data-type="open"] {
+      margin-left: var(--space-open);
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-open);
+      }
+    }
+
+    [data-type="close"] {
+      margin-left: var(--space-close);
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-close);
+      }
+    }
+
+    [data-type="inner"] {
+      margin-left: var(--space-inner);
+      &:not(:has(+ msub)):not(:has(+ msup)):not(:has(+ msubsup)) {
+        margin-right: var(--space-inner);
+      }
+    }
+
+    msub {
+      //container-type: size;
+      // Lower the subscript (2nd child)
+      > *:nth-child(2) {
+        transform: translateY(-0.12em);
+        // margin-bottom to reduced the effictive height
+        margin-bottom: -0.06em;
+      }
+    }
+    msub:has(> mpadded > mrow > [fence="true"]) {
+      > *:nth-child(2) {
+        transform: translateY(-0.5em) translateX(0.1em);
+      }
+    }
+
+    msup {
+      //container-type: size;
+      // Raise the superscript (2nd child)
+      > *:nth-child(2) {
+        transform: translateY(0.15em);
+        @supports (not (-moz-appearance: none)) {
+          transform: translateY(0.15em) translateX(0.15em);
+        }
+        // margin-top to reduced the effictive height
+        margin-top: -0.08em;
+      }
+    }
+    msup:has(> mpadded > mrow > [fence="true"]) {
+      > *:nth-child(2) {
+        transform: translateY(0.4em) translateX(0.1em);
+        @supports (not (-moz-appearance: none)) {
+          transform: translateY(0.4em) translateX(0.15em);
+        }
+      }
+    }
+
+    msubsup {
+      > *:nth-child(2) {
+        transform: translateY(-0.12em);
+        margin-bottom: -0.06em;
+      }
+
+      > *:nth-child(3) {
+        transform: translateY(0.15em);
+        @supports (not (-moz-appearance: none)) {
+          transform: translateY(0.15em) translateX(0.15em);
+        }
+        margin-top: -0.08em;
+      }
+    }
+
+    msubsup:has(> mpadded > mrow > [fence="true"]) {
+      > *:nth-child(2) {
+        transform: translateY(-0.5em) translateX(0.1em);
+        margin-bottom: -0.06em;
+      }
+      > *:nth-child(3) {
+        transform: translateY(0.4em);
+        @supports (not (-moz-appearance: none)) {
+          transform: translateY(0.4em) translateX(0.15em);
+        }
+      }
+    }
+
+    msub,
+    msup,
+    msubsup {
+      /* Ghost base hiding */
+      > mrow:first-child {
+        visibility: hidden;
+        width: 0;
+      }
+
+      /* Pass spacing through if the *inner atom* of the first mpadded is typed */
+      &:has(> mpadded:first-child > :last-child[data-type="rel"])   { margin-right: var(--space-rel); }
+      &:has(> mpadded:first-child > :last-child[data-type="bin"])   { margin-right: var(--space-bin); }
+      &:has(> mpadded:first-child > :last-child[data-type="punct"]) { margin-right: var(--space-punct); }
+      &:has(> mpadded:first-child > :last-child[data-type="open"])  { margin-right: var(--space-open); }
+      &:has(> mpadded:first-child > :last-child[data-type="close"]) { margin-right: var(--space-close); }
+      &:has(> mpadded:first-child > :last-child[data-type="inner"]) { margin-right: var(--space-inner); }
+      &:has(> mpadded:first-child > mi[data-function])              { margin-right: var(--space-op); }
+
+      &:has(+ mo) {
+        margin-right: 0;
+      }
+
+      /* Suppress margins on the inner atom (both data-type and data-function) */
+      > mpadded:first-child > :last-child[data-type],
+      > mpadded:first-child > mi[data-function]:last-child {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
+    }
+
+    mover.arrow {
+      > :nth-child(2) {
+        margin-bottom: -0.15em;
+      }
+    }
+    .normal, .italic, .bold-italic, .bold, .fraktur,
+    .sans-serif, .monospace {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .mathfont {
+      margin-left: 0;
+      margin-right: 0;
+      > mrow {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+    .italic {
+      mn {
+        font-style: italic;
+      }
+    }
+    .bold-italic {
+      mn {
+        font-style: italic;
+      }
+      font-weight: bold;
+    }
+    .bold {
+      font-weight: bold;
+    }
+    .fraktur {
+      mn {
+        font-family: cursive;
+        transform: scaleY(0.8);
+        transform-origin: bottom;
+      }
+    }
+
+    // TEXT FONTS
+
+    @mixin italics {
+      font-style: italic;
+
+      @supports (-moz-appearance: none) {
+        margin-left: -0.1em;
+        margin-right: -0.1em;
+      }
+    }
+
+    mtext{
+      font-family: 'Latin Modern Roman';
+    }
+    .textrm {
+      mtext {
+        font-family: 'Latin Modern Roman';
+      }
+    }
+    .textit {
+      mtext{
+        @include italics;
+      }
+    }
+    .textbf {
+      mtext{
+        font-weight: bold;
+      }
+    }
+    .textmd {
+      mtext{
+        font-weight: 400;
+      }
+    }
+    .textup {
+      mtext{
+        font-style: normal;
+      }
+    }
+    .textnormal {
+      mtext{
+        font-family: 'Latin Modern Roman';
+        font-style: normal;
+        font-weight: 400;
+      }
+    }
+    .textsf {
+      mtext{
+        font-family: 'Latin Modern Sans';
+      }
+    }
+    .texttt {
+      mtext{
+        font-family: 'Latin Modern Mono';
+      }
+    }
+
+    /* --- Emphasis (context-sensitive toggle) --- */
+    .emph {
+      mtext{
+        @include italics;
+      }
+    }
+    .textit .emph {
+      mtext{
+        font-style: normal;
+      }
+    }
+    .textup .emph,
+    .textnormal .emph {
+      mtext{
+        @include italics;
+      }
+    }
+  }
+
+  // Blink and webkit (not firefox)
+  @supports (-webkit-appearance: none) and (not (-moz-appearance: none)) {
+    .lme math {
+
+      /* No left-spacing before operators when preceded by anything that is NOT postfix */
+      mo:not([form="postfix"]) + mi[data-function] {
+        margin-left: 0;
+      }
+
+      mrow {
+        &:empty {
+          display: flex;
+        }
+      }
+      mtable {
+        border-collapse: separate;
+        border-spacing: 0em 0em;
+      }
+      mover.arrow {
+        > :nth-child(2) {
+          margin-bottom: -0.3em;
+        }
+      }
+    }
+  }
+
+  /* Targets only Chrome (Blink), not Safari or Firefox */
+  @supports (-webkit-appearance: none) and (not (-webkit-nbsp-mode: space)) and (not (-moz-appearance: none)) {
+    .lme math {
+      mover {
+        > mo:last-child {
+          padding-bottom: 0.05em;
+        }
+      }
+      menclose {
+        &[notation="bottom"] {
+          padding: 0 0 0.05em 0;
+          border-bottom: 0.065em solid;
+          > mrow {
+            margin: 0 -0.05em;
+          }
+        }
+      }
+    }
+  }
+
+  /* WebKit engines (Safari + WebKitGTK), not Blink */
+  @supports (-webkit-nbsp-mode: space) {
+    .lme math {
+      mtd > mrow {
+        text-align: -webkit-auto;
+      }
+      mover {
+        > mo[stretchy="false"]:last-child {
+          height: 0.3em;
+          transform: translateY(0.1em);
+        }
+        &.overline {
+          border-top: solid 1px;
+          padding-top: 0.05em;
+          > mo[stretchy="true"]:last-child {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  // Firefox-specific CSS
+  @supports (-moz-appearance: none) {
+    .lme math {
+      mi:not([data-function], [mathvariant]) + mi[data-function] {
+        margin-left: 0;
+      }
+      mi[data-function]:has(+ mi:not([data-function], [mathvariant])) {
+        margin-right: 0;
+      }
+      mtext {
+        margin-top: -0.25em !important;
+        margin-bottom: -0.25em !important;
+      }
+    }
+  }
+
+  // this should apply to safari too. but let's move on and change
+  // the ' symbol in the font. to make it larger and fill it's own space.
+  .lme math {
+    .prime {
+      // Not firefox
+      @supports (not (-moz-appearance: none)) {
+        transform: scale(1.5) translateY(50%);
+      }
+
+      // Safari override
+      @supports (-webkit-nbsp-mode: space) {
+        transform: translateY(0.2em);
+      }
+    }
+  }
+
+  // Logo utility classes
+  .vieta-logo {
+    height: var(--logo-height-md);
+    width: auto;
+
+    &--small {
+      height: var(--logo-height-sm);
+    }
+
+    &--large {
+      height: var(--logo-height-lg);
+    }
+
+    &--responsive {
+      height: var(--logo-height-sm);
+
+      @media (min-width: 768px) {
+        height: var(--logo-height-md);
+      }
+
+      @media (min-width: 1024px) {
+        height: var(--logo-height-lg);
+      }
+    }
+  }
+
+  // Brand color utility classes
+  .text-brand-primary { color: var(--brand-primary); }
+  .text-brand-secondary { color: var(--brand-secondary); }
+  .text-brand-light { color: var(--brand-light); }
+
+  .bg-brand-primary { background-color: var(--brand-primary); }
+  .bg-brand-secondary { background-color: var(--brand-secondary); }
+  .bg-brand-light { background-color: var(--brand-light); }
+
+  .border-brand-primary { border-color: var(--brand-primary); }
+  .border-brand-secondary { border-color: var(--brand-secondary); }
+  .border-brand-light { border-color: var(--brand-light); }
+
+  // Typography utility classes
+  .h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+  }
+  .h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+  }
+  .h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+  }
+  .h4 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+  }
+
+  .text-2xs { font-size: var(--font-size-2xs); }
+  .text-xs { font-size: var(--font-size-xs); }
+  .text-sm { font-size: var(--font-size-sm); }
+  .text-base { font-size: var(--font-size-base); }
+  .text-lg { font-size: var(--font-size-lg); }
+  .text-xl { font-size: var(--font-size-xl); }
+  .text-2xl { font-size: var(--font-size-2xl); }
+
+  // Icon size utility classes
+  .icon-xs { width: var(--icon-size-xs); height: var(--icon-size-xs); }
+  .icon-sm { width: var(--icon-size-sm); height: var(--icon-size-sm); }
+  .icon-md { width: var(--icon-size-md); height: var(--icon-size-md); }
+  .icon-lg { width: var(--icon-size-lg); height: var(--icon-size-lg); }
+  .icon-xl { width: var(--icon-size-xl); height: var(--icon-size-xl); }
+  .icon-2xl { width: var(--icon-size-2xl); height: var(--icon-size-2xl); }
+
+  .font-light { font-weight: var(--font-weight-light); }
+  .font-normal { font-weight: var(--font-weight-normal); }
+  .font-medium { font-weight: var(--font-weight-medium); }
+  .font-semibold { font-weight: var(--font-weight-semibold); }
+  .font-bold { font-weight: var(--font-weight-bold); }
+
+  // Animation and transition utilities
+  .transition-fast {
+    transition: all var(--duration-fast) var(--ease-in-out);
+  }
+  .transition-normal {
+    transition: all var(--duration-normal) var(--ease-in-out);
+  }
+  .transition-slow {
+    transition: all var(--duration-slow) var(--ease-in-out);
+  }
+
+  // Keyframe animations
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .fade-in { animation: fadeIn var(--duration-normal) var(--ease-out); }
+  .slide-in-left { animation: slideInLeft var(--duration-normal) var(--ease-out); }
+  .scale-in { animation: scaleIn var(--duration-fast) var(--ease-out); }
+
+  // Loading spinner
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--border-light);
+    border-top: 2px solid var(--brand-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  // Focus and accessibility styles
+  .focus-ring {
+    &:focus {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+    }
+  }
+
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    :root {
+      --border-color: #000000;
+      --text-secondary: #000000;
+    }
+  }
+
+  // Shadow utility classes
+  .shadow-subtle { box-shadow: var(--shadow-subtle); }
+  .shadow-medium { box-shadow: var(--shadow-medium); }
+  .shadow-large { box-shadow: var(--shadow-large); }
+
+  // Border radius utility classes
+  .rounded-sm { border-radius: var(--radius-sm); }
+  .rounded-md { border-radius: var(--radius-md); }
+  .rounded-lg { border-radius: var(--radius-lg); }
+  .rounded-xl { border-radius: var(--radius-xl); }
+
+  // Spacing utility classes
+  .p-xs { padding: var(--spacing-xs); }
+  .p-sm { padding: var(--spacing-sm); }
+  .p-md { padding: var(--spacing-md); }
+  .p-lg { padding: var(--spacing-lg); }
+  .p-xl { padding: var(--spacing-xl); }
+
+  .m-xs { margin: var(--spacing-xs); }
+  .m-sm { margin: var(--spacing-sm); }
+  .m-md { margin: var(--spacing-md); }
+  .m-lg { margin: var(--spacing-lg); }
+  .m-xl { margin: var(--spacing-xl); }
+
+  // Status color utilities
+  .text-success { color: var(--success-color); }
+  .text-warning { color: var(--warning-color); }
+  .text-error { color: var(--error-color); }
+  .text-info { color: var(--info-color); }
+
+  .bg-success { background-color: var(--success-color); }
+  .bg-warning { background-color: var(--warning-color); }
+  .bg-error { background-color: var(--error-color); }
+  .bg-info { background-color: var(--info-color); }
+}

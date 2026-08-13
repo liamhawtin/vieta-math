@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a repeatable problem in VietaMath
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the LaTeX input and what you expected.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: VietaMath version
+    validations:
+      required: true
+  - type: dropdown
+    id: integration
+    attributes:
+      label: Integration
+      options:
+        - Standalone input
+        - ProseMirror
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser and operating system
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Link to a small repository or list the shortest steps you can.
+    validations:
+      required: true
