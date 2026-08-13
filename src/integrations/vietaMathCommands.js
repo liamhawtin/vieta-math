@@ -116,7 +116,7 @@ export function ensureMathLineVisible(view) {
   const mathWrapper = container.closest?.(".pm-vieta-math-wrapper");
   if (mathWrapper) {
     container = mathWrapper;
-    anchorRect = mathWrapper.getClientRects()[0] || null;;
+    anchorRect = mathWrapper.getClientRects()[0] || null;
   }
 
   if (!anchorRect) return;
