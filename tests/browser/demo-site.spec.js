@@ -100,6 +100,7 @@ test("ProseMirror Smart Menu is anchored to the caret in the viewport", async ({
   await page.goto("/prosemirror.html");
   await page.getByRole("button", { name: "Insert math" }).click();
   const editor = page.locator(".interactive-mathml");
+  await expect(editor).toBeVisible();
   await editor.click({ position: { x: 12, y: 12 } });
   const caret = page.locator(".math-cursor");
   await expect(caret).toBeVisible();
