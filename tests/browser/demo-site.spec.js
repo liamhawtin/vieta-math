@@ -117,6 +117,16 @@ test("ProseMirror demo creates an inline VietaMath node", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("ProseMirror demo serializes an inserted node as exported LaTeX", async ({ page }) => {
+  await page.goto("/prosemirror.html");
+  await page.getByRole("button", { name: "Insert math" }).click();
+  const exported = page.locator(".document-export");
+  await expect(exported).toContainText('class="pm-vieta-math"');
+  await expect(exported).toContainText('data-vieta-math="1"');
+  await expect(exported).toContainText("$\\sqrt{x^2+y^2}$");
+  await expect(exported).not.toContainText("mkern");
+});
+
 test("ProseMirror Smart Menu stays in the viewport", async ({ page }) => {
   await page.goto("/prosemirror.html");
   await page.getByRole("button", { name: "Insert math" }).click();
