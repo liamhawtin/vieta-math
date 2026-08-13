@@ -5,6 +5,10 @@
 }
 
 .smart-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
 
   .smart-menu {
     pointer-events: all;

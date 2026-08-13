@@ -247,17 +247,21 @@ export class VietaMath {
 
   _setupActivationListeners() {
     this._activateHandler = () => {
-      if (!this.controller.isActive()) {
+      // A pointerdown can happen after this editor already rendered its caret.
+      // In that case `isActive()` is true before the registry has selected an
+      // owner, which leaves shared UI such as the Smart Menu disconnected.
+      if (registry.getActiveId() !== this.instanceId) {
         registry.setActive(this.instanceId);
       }
     };
 
+    // The wrapper exists before React creates the editor ref, so register
+    // pointer activation immediately. Waiting for the ref creates a brief
+    // startup race where Tab can open no shared UI at all.
+    this.editorRoot.addEventListener('pointerdown', this._activateHandler);
+
     // Wait for the editor ref created during the first React render.
     this._activationTimeout = setTimeout(() => {
-      if (this.editorRoot) {
-        this.editorRoot.addEventListener('pointerdown', this._activateHandler);
-      }
-
       const es = this.rootStore?.editorStore;
       if (es?.editorRef) {
         this._blurHandler = (e) => {

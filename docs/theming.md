@@ -11,6 +11,32 @@ mode; that prevents a dark editor from appearing inside a host application that
 is intentionally light. A host that follows the system preference should set
 the attribute on its own application root as that preference changes.
 
+## Host theme and browser preference
+
+`prefers-color-scheme` tells a site what the browser prefers. It does not mean
+the site has changed its own colors. If a host page stays light while the
+browser prefers dark mode, keep VietaMath light too by leaving its root
+unmarked or by putting `data-theme="light"` on the application root. Do not set
+`data-theme="dark"` on the editor alone in that situation.
+
+When the host genuinely supports dark mode, make one application-level choice
+and use it for both the surrounding page and VietaMath:
+
+```js
+const app = document.querySelector("#app");
+const query = window.matchMedia("(prefers-color-scheme: dark)");
+
+function applyTheme() {
+  app.dataset.theme = query.matches ? "dark" : "light";
+}
+
+applyTheme();
+query.addEventListener("change", applyTheme);
+```
+
+Place the VietaMath mount under `#app`. This keeps the editor, menu, and host
+surface on the same palette.
+
 ```css
 .my-math-surface .vieta-root {
   --bg-primary: #ffffff !important;
