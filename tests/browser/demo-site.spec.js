@@ -12,6 +12,8 @@ test("standalone demo mounts and exports LaTeX", async ({ page }) => {
   await page.goto("/standalone.html");
   await expect(page.locator(".interactive-mathml")).toBeVisible();
   await expect.poll(() => page.evaluate(() => document.fonts.check('16px "Latin Modern Math Upright"'))).toBe(true);
+  await expect(page.locator("pre")).not.toContainText("mkern");
+  await expect(page.locator("pre")).toContainText("\\,");
   await page.getByRole("button", { name: "Show LaTeX" }).click();
   await expect(page.locator("pre")).toContainText("int");
   await expect(page.getByText("Desktop browser and physical keyboard required.")).toHaveCount(0);
@@ -31,6 +33,7 @@ test("home page presents a focused VietaMath preview and walkthrough", async ({ 
   await expect(page.locator(".wordmark img")).toHaveCount(0);
   await expect(page.locator(".product-provenance")).toContainText("VietaMath by VietaSpace");
   await expect(page.locator(".try-editor .interactive-mathml")).toBeVisible();
+  await expect(page.locator(".try-editor .preview-footer [aria-live]")).not.toContainText("mkern");
   await expect(page.locator(".product-preview source")).toHaveAttribute("src", "./vieta-math-demo.mp4");
   await expect(page.locator(".product-preview video")).toHaveAttribute("poster", "./vieta-math-demo-poster.png");
   expect(failures).toEqual([]);
@@ -59,7 +62,10 @@ test("theme demo exposes both VietaMath CSS-variable layers", async ({ page }) =
   page.on("pageerror", error => errors.push(error));
   await page.goto("/theme.html");
   await expect(page.locator(".interactive-mathml")).toBeVisible();
-  await expect(page.locator(".theme-demo code")).toHaveCount(2);
+  await expect(page.locator(".theme-rule-card")).toHaveCount(3);
+  await expect(page.locator(".theme-guide")).toContainText("Browser preference is not a host theme.");
+  await expect(page.locator(".theme-rule-card").nth(1)).toContainText(".vieta-root");
+  await expect(page.locator(".theme-rule-card").nth(2)).toContainText(".interactive-mathml");
   await page.getByRole("button", { name: "Use dark values" }).click();
   await expect(page.locator(".theme-dark")).toBeVisible();
   expect(errors).toEqual([]);

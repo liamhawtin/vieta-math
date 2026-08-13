@@ -40,13 +40,26 @@ function HomePreview() {
       if (!active) return;
       UIRegistry = registry;
       UIRegistry.mountSmartMenu(smartMenu.current);
-      editor.current = new VietaMath(mount.current, { initialContent: String.raw`\int_0^1 x^2\,dx`, focusOnInit: false, smartMenuContainer: smartMenu.current, onChange: setLatex });
+      editor.current = new VietaMath(mount.current, { initialContent: String.raw`\int_0^1 x^2\,dx`, focusOnInit: false, smartMenuContainer: smartMenu.current, onChange() { setLatex(editor.current?.getSanitizedLatex() ?? ""); } });
       setLatex(editor.current.getSanitizedLatex());
       setReady(true);
     });
     return () => { active = false; editor.current?.destroy(); UIRegistry?.unmountSmartMenu(); };
   }, []);
   return <section className={`try-editor site-${systemTheme}`} data-theme={systemTheme} id="try-editor" aria-labelledby="try-editor-title"><div className="try-editor-heading"><div><p className="eyebrow">Try the interaction</p><h2 id="try-editor-title">Start with the expression.</h2></div><p>Type directly, then press <kbd>Tab</kbd> to search symbols.</p></div><div ref={smartMenu} /><div ref={mount} className="math-mount preview-mount" /><div className="preview-footer"><span aria-live="polite">{ready ? `LaTeX: ${latex}` : "Loading editor…"}</span><a href="./standalone.html">Open the full standalone demo <span aria-hidden="true">→</span></a></div></section>;
+}
+
+function ThemeGuide({ dark }) {
+  const hostValues = dark
+    ? `.course-editor[data-theme="dark"] {\n  background: #1e2b2d;\n  color: #f5f7f7;\n}`
+    : `.course-editor[data-theme="light"] {\n  background: #ffffff;\n  color: #212529;\n}`;
+  const uiValues = dark
+    ? `.course-editor .vieta-root {\n  --bg-primary: #1e2b2d !important;\n  --text-primary: #f5f7f7 !important;\n  --border-color: rgba(255,255,255,.2) !important;\n}`
+    : `.course-editor .vieta-root {\n  --bg-primary: #ffffff !important;\n  --text-primary: #212529 !important;\n  --border-color: #dee2e6 !important;\n}`;
+  const mathValues = dark
+    ? `.course-editor .vieta-root .interactive-mathml {\n  --mm-text: #f5f7f7 !important;\n  --mm-caret: #a7c2c8 !important;\n  --mm-selection: rgba(167,194,200,.3) !important;\n}`
+    : `.course-editor .vieta-root .interactive-mathml {\n  --mm-text: #212529 !important;\n  --mm-caret: #004288 !important;\n  --mm-selection: rgba(0,123,255,.2) !important;\n}`;
+  return <section className="theme-guide" aria-labelledby="theme-guide-title"><div className="theme-guide-heading"><div><p className="eyebrow">The working pattern</p><h2 id="theme-guide-title">Style the host and editor together.</h2></div><p>Previewing {dark ? "dark" : "light"} host values.</p></div><div className="theme-rule-grid"><article className="theme-rule-card"><h3>1. Host surface</h3><p>Your application owns the background and chooses the theme.</p><pre><code>{hostValues}</code></pre></article><article className="theme-rule-card"><h3>2. Editor UI</h3><p>Override the VietaMath surface, text, and border variables.</p><pre><code>{uiValues}</code></pre></article><article className="theme-rule-card"><h3>3. Math interaction</h3><p>Set caret and selection values on the math element itself.</p><pre><code>{mathValues}</code></pre></article></div><aside className="theme-warning"><strong>Browser preference is not a host theme.</strong><p>A light site in a dark-preference browser should keep VietaMath light. Set <code>data-theme</code> only where the surrounding surface changes too.</p></aside><a className="theme-reference" href="https://github.com/liamhawtin/vieta-math/blob/main/docs/theming.md">Read the complete variable reference <span aria-hidden="true">→</span></a></section>;
 }
 
 function Standalone({ themed = false }) {
@@ -62,8 +75,8 @@ function Standalone({ themed = false }) {
       UIRegistry = registry;
       UIRegistry.mountSymbolPad(symbolPad.current);
       UIRegistry.mountSmartMenu(smartMenu.current);
-      editor.current = new VietaMath(mount.current, { initialContent: String.raw`\int_0^1 x^2\,dx`, focusOnInit: true, symbolPadContainer: symbolPad.current, smartMenuContainer: smartMenu.current, onChange: setLatex });
-      setLatex(editor.current.getLatex());
+      editor.current = new VietaMath(mount.current, { initialContent: String.raw`\int_0^1 x^2\,dx`, focusOnInit: true, symbolPadContainer: symbolPad.current, smartMenuContainer: smartMenu.current, onChange() { setLatex(editor.current?.getSanitizedLatex() ?? ""); } });
+      setLatex(editor.current.getSanitizedLatex());
       setReady(true);
     });
 
@@ -76,7 +89,7 @@ function Standalone({ themed = false }) {
   }, []);
   const content = <><div className="demo-toolbar"><button disabled={!ready} onClick={() => editor.current?.setLatex(String.raw`\sum_{k=1}^{n} k^2`)}>Load a sum</button><button disabled={!ready} onClick={() => setLatex(editor.current?.getSanitizedLatex() ?? "")}>Show LaTeX</button></div><div ref={smartMenu} /><div ref={mount} className="math-mount" /><p className="help">Press <kbd>Tab</kbd> while editing to open the symbol menu.</p><p className="status">Current LaTeX</p><pre>{latex || (ready ? "Start editing the expression above." : "Loading editor…")}</pre><details className="optional-tools"><summary>Optional shared Symbol Pad</summary><p>Hosts can mount the Symbol Pad once and pass its container to every editor in the view.</p><div ref={symbolPad} className="symbol-mount" /></details></>;
   if (!themed) return <section className={`demo-card site-${systemTheme}`} data-theme={systemTheme}>{content}</section>;
-  return <section className={`theme-demo ${dark ? "theme-dark" : "theme-light"}`} data-theme={dark ? "dark" : "light"}><div className="demo-toolbar"><span>Override preview</span><button onClick={() => setDark(v => !v)}>Use {dark ? "light" : "dark"} values</button></div>{content}<aside><strong>Two layers</strong><code>.vieta-root</code><code>.vieta-root .interactive-mathml</code><p>The CSS values here use the same muted-teal visual language as the demo site.</p></aside></section>;
+  return <section className={`theme-demo ${dark ? "theme-dark" : "theme-light"}`} data-theme={dark ? "dark" : "light"}><div className="demo-toolbar"><button onClick={() => setDark(v => !v)}>Use {dark ? "light" : "dark"} values</button></div>{content}<ThemeGuide dark={dark} /></section>;
 }
 
 function ProseMirrorDemo() {
