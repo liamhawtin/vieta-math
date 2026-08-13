@@ -1,6 +1,6 @@
 {
   "name": "vieta-math",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "workspaces": [
     "latex-math-engine",
@@ -10,7 +10,7 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "description": "A reusable math editor library with LaTeX support",
+  "description": "Browser math editing for advanced notation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
