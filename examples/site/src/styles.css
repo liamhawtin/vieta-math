@@ -15,6 +15,7 @@ footer { max-width: 1120px; width: 100%; margin: 0 auto; padding: 26px 28px 34px
 .product-provenance { display: flex; align-items: center; gap: 10px; margin: 0 0 26px; color: #a7c2c8; font-size: 13px; font-weight: 650; }.product-provenance img { width: 36px; max-height: 32px; object-fit: contain; object-position: left; }
 .hero h1, .page-intro h1 { max-width: 810px; margin: 10px 0 20px; font-size: clamp(2.7rem, 6vw, 5.5rem); letter-spacing: -.055em; line-height: .93; }
 .hero p:not(.eyebrow), .page-intro p:not(.eyebrow) { max-width: 640px; color: rgba(245,247,247,.76); line-height: 1.68; font-size: 16px; }
+.page-reference { display: inline-block; margin-top: 18px; color: #a7c2c8; font-size: 14px; font-weight: 700; text-decoration: none; }.page-reference:hover { color: #f5f7f7; }
 .page-intro { padding-top: clamp(54px, 8vw, 94px); padding-bottom: clamp(44px, 7vw, 78px); }.page-intro h1 { max-width: 720px; font-size: clamp(2.35rem, 5vw, 4.4rem); }.page-intro p { margin-bottom: 0; }
 .eyebrow { margin: 0; color: #a7c2c8; text-transform: uppercase; font-size: 11px; letter-spacing: .12em; font-weight: 700; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }.actions a { border: 1px solid rgba(245,247,247,.38); padding: 11px 18px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 650; }.actions a:first-child { color: #293d41; background: #f5f7f7; border-color: #f5f7f7; }

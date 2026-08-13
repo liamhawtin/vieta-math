@@ -1,6 +1,6 @@
 {
   "name": "vieta-math",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": false,
   "workspaces": [
     "latex-math-engine",
@@ -32,7 +32,8 @@
     "LICENSE",
     "LICENSES",
     "NOTICE",
-    "THIRD_PARTY_LICENSES.md"
+    "THIRD_PARTY_LICENSES.md",
+    "docs"
   ],
   "sideEffects": [
     "*.css",

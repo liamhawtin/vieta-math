@@ -62,17 +62,20 @@ const smartMenu = document.querySelector("#smart-menu");
 UIRegistry.mountSymbolPad(symbolPad);
 UIRegistry.mountSmartMenu(smartMenu);
 
-const editor = new VietaMath(document.querySelector("#math-input"), {
+let editor;
+function updateExport() {
+  console.log(editor.getSanitizedLatex());
+}
+
+editor = new VietaMath(document.querySelector("#math-input"), {
   initialContent: String.raw`\int_0^1 x^2\,dx`,
   focusOnInit: true,
   symbolPadContainer: symbolPad,
   smartMenuContainer: smartMenu,
-  onChange(rawLatex) {
-    console.log(rawLatex);
-  },
+  onChange: updateExport,
 });
 
-const latexForExport = editor.getSanitizedLatex();
+updateExport();
 
 // When the host view is removed:
 editor.destroy();
@@ -98,8 +101,9 @@ against the viewport and places the menu itself, flipping above the caret when
 there is not enough room below. This is the arrangement used by the standalone
 and ProseMirror examples.
 
-See the runnable standalone example in
-[`examples/standalone`](examples/standalone).
+Read the complete [standalone reference](docs/standalone.md) for every
+constructor option, the shared-UI lifecycle, output forms, and advanced hooks.
+See the runnable standalone example in [`examples/standalone`](examples/standalone).
 
 ## ProseMirror
 
@@ -152,7 +156,10 @@ const view = new EditorView(document.querySelector("#document-editor"), {
 Typing a complete `$latex$` expression converts it to an inline VietaMath node.
 You can also call `insertVietaMath(schema)` from a command or button. The
 runnable ProseMirror example in [`examples/prosemirror`](examples/prosemirror)
-shows the optional shared symbol-pad and smart-menu mounts.
+shows the optional shared symbol-pad and smart-menu mounts. Read the complete
+[ProseMirror reference](docs/prosemirror.md) for node attributes, persistence,
+clipboard behavior, keyboard behavior, node-view options, and every public
+ProseMirror export.
 
 ## Styling and themes
 

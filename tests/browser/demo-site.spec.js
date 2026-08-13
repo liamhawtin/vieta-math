@@ -11,6 +11,7 @@ test("standalone demo mounts and exports LaTeX", async ({ page }) => {
   });
   await page.goto("/standalone.html");
   await expect(page.locator(".interactive-mathml")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Read all standalone options and methods" })).toBeVisible();
   await expect.poll(() => page.evaluate(() => document.fonts.check('16px "Latin Modern Math Upright"'))).toBe(true);
   await expect(page.locator("pre")).not.toContainText("mkern");
   await expect(page.locator("pre")).toContainText("\\,");
@@ -108,9 +109,11 @@ test("ProseMirror demo creates an inline VietaMath node", async ({ page }) => {
   page.on("pageerror", error => errors.push(error));
   await page.goto("/prosemirror.html");
   await expect(page.locator(".ProseMirror")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Read the ProseMirror guide" })).toBeVisible();
   await page.getByRole("button", { name: "Insert math" }).click();
   await expect(page.locator(".pm-vieta-math-wrapper")).toBeVisible();
   await expect(page.locator(".interactive-mathml")).toBeVisible();
+  await expect(page.locator(".demo-card")).toHaveAttribute("data-prosemirror-api", "ready");
   expect(errors).toEqual([]);
 });
 

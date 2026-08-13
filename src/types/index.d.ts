@@ -7,13 +7,22 @@ export class UIRegistry {
   static unmountSmartMenu(): void;
 }
 
+export interface VietaMathSelection {
+  active: boolean;
+  range: { start: number; end: number };
+}
+
+export interface VietaMathChangeData {
+  selection?: VietaMathSelection;
+}
+
 export interface VietaMathOptions {
   initialContent?: string;
   allowBoundaryExit?: boolean;
   focusOnInit?: boolean;
   symbolPadContainer?: HTMLElement | string | null;
   smartMenuContainer?: HTMLElement | string | null;
-  onChange?: (rawLatex: string) => void;
+  onChange?: (rawLatex: string, data?: VietaMathChangeData) => void;
   toolbarContainer?: HTMLElement | string | null;
   instanceId?: string;
   externalActions?: VietaMathExternalActions | null;
