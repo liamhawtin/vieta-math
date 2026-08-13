@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { resolve } from "node:path";
+
+const builtPackageModule = `/@fs${resolve(process.cwd(), "dist/index.mjs")}`;
 
 test("standalone demo mounts and exports LaTeX", async ({ page }) => {
   const errors = [];
@@ -56,6 +59,24 @@ test("standalone Tab opens the shared Smart Menu", async ({ page }) => {
   await page.keyboard.press("Tab");
   await expect(page.locator(".smart-menu")).toBeVisible();
   await expect(page.locator(".search-input")).toBeFocused();
+});
+
+test("standalone instance can be destroyed after mounting", async ({ page }) => {
+  await page.goto("/standalone.html");
+  const result = await page.evaluate(async modulePath => {
+    const { VietaMath } = await import(modulePath);
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const instance = new VietaMath(mount, { initialContent: String.raw`x^2`, focusOnInit: false });
+    await new Promise(resolve => setTimeout(resolve, 150));
+    const mounted = Boolean(mount.querySelector(".vieta-root"));
+    instance.destroy();
+    await new Promise(resolve => setTimeout(resolve, 150));
+    const destroyed = !mount.querySelector(".vieta-root");
+    mount.remove();
+    return { mounted, destroyed };
+  }, builtPackageModule);
+  expect(result).toEqual({ mounted: true, destroyed: true });
 });
 
 test("theme demo exposes both VietaMath CSS-variable layers", async ({ page }) => {
@@ -125,6 +146,24 @@ test("ProseMirror demo serializes an inserted node as exported LaTeX", async ({ 
   await expect(exported).toContainText('data-vieta-math="1"');
   await expect(exported).toContainText("$\\sqrt{x^2+y^2}$");
   await expect(exported).not.toContainText("mkern");
+});
+
+test("ProseMirror copy uses exported Markdown", async ({ page }) => {
+  await page.goto("/prosemirror.html");
+  await page.getByRole("button", { name: "Insert math" }).click();
+  await page.getByRole("button", { name: "Exit active math" }).click();
+  const editor = page.locator(".ProseMirror");
+  await editor.focus();
+  await page.keyboard.press("Control+a");
+  const copied = await editor.evaluate(element => {
+    const clipboardData = new DataTransfer();
+    const event = new ClipboardEvent("copy", { bubbles: true, cancelable: true, clipboardData });
+    element.dispatchEvent(event);
+    return { defaultPrevented: event.defaultPrevented, text: clipboardData.getData("text/plain") };
+  });
+  expect(copied.defaultPrevented).toBe(true);
+  expect(copied.text).toContain("$\\sqrt{x^2+y^2}$");
+  expect(copied.text).not.toContain("mkern");
 });
 
 test("ProseMirror Smart Menu stays in the viewport", async ({ page }) => {
