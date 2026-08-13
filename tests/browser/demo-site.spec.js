@@ -36,6 +36,15 @@ test("home page presents a focused VietaMath preview and walkthrough", async ({ 
   expect(failures).toEqual([]);
 });
 
+test("home preview keeps its host surface aligned with VietaMath in dark mode", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const preview = page.locator(".try-editor");
+  await expect(preview).toHaveAttribute("data-theme", "dark");
+  await expect.poll(() => page.locator(".preview-mount").evaluate(element => getComputedStyle(element).backgroundColor)).toBe("rgb(30, 43, 45)");
+  await expect.poll(() => page.locator(".preview-mount .interactive-mathml").evaluate(element => getComputedStyle(element).color)).toBe("rgb(245, 247, 247)");
+});
+
 test("standalone Tab opens the shared Smart Menu", async ({ page }) => {
   await page.goto("/standalone.html");
   const editor = page.locator(".interactive-mathml");

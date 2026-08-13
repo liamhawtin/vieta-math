@@ -171,10 +171,24 @@ visitor's browser prefers dark mode. If the application follows the system
 preference, update its own root attribute and its surrounding colors together.
 Do not put `data-theme="dark"` on only the editor inside an otherwise light
 page; that makes the editor look broken even though the host has chosen two
-different themes. To apply a host theme, override the variables on the
-VietaMath root and, where needed, on its interactive math element. Package
-styles are injected at runtime, so use `!important` when the host stylesheet is
-loaded first:
+different themes. Put the attribute on the element that owns both the page
+surface and VietaMath, then give that host matching colors:
+
+```css
+.course-editor[data-theme="light"] {
+  background: #ffffff;
+  color: #212529;
+}
+
+.course-editor[data-theme="dark"] {
+  background: #1e2b2d;
+  color: #f5f7f7;
+}
+```
+
+To apply a host theme, override the variables on the VietaMath root and, where
+needed, on its interactive math element. Package styles are injected at
+runtime, so use `!important` when the host stylesheet is loaded first:
 
 ```css
 .course-editor .vieta-root {
