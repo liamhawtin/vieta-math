@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: read
   id-token: write
 
 jobs:
   publish:
-    if: github.repository_owner == 'liamhawtin'
+    if: github.repository_owner == 'liamhawtin' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -25,3 +26,6 @@ jobs:
       - run: npm run build:examples
       - run: npm run test:browser
       - run: npm publish --provenance --access public
+      - run: gh workflow run pages.yml --ref main -f package_version="$(node -p "require('./package.json').version")"
+        env:
+          GH_TOKEN: ${{ github.token }}

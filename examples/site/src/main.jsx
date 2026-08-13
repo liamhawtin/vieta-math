@@ -41,7 +41,7 @@ function Shell({ children }) {
   const page = document.body.dataset.page;
   return <div className="site-shell">
     <header className="site-header"><a className="wordmark" href="./index.html">VietaMath</a><nav>{Object.entries(pages).slice(1).map(([key, [label, href]]) => <a className={key === page ? "active" : ""} href={`./${href}`} key={key}>{label}</a>)}</nav></header>
-    <main>{children}</main><footer>Browser math editing for advanced work. <a href="https://github.com/liamhawtin/vieta-math">Source</a></footer>
+    <main>{children}</main><footer>Browser math editing for advanced work. <a href="https://github.com/liamhawtin/vieta-math">Source</a> · <a href="https://www.npmjs.com/package/vieta-math">npm</a></footer>
   </div>;
 }
 

@@ -14,6 +14,8 @@ Try the [live VietaMath demos](https://liamhawtin.github.io/vieta-math/): a
 standalone input, a theme override example, and a ProseMirror editor are all
 available in the browser.
 
+The published package is [vieta-math on npm](https://www.npmjs.com/package/vieta-math).
+
 ## Install
 
 VietaMath renders through React. React and ReactDOM are peer dependencies, so
