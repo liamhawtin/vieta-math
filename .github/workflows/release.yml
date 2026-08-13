@@ -1,6 +1,8 @@
-name: Publish npm package
+name: Release and deploy
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -9,8 +11,30 @@ permissions:
   id-token: write
 
 jobs:
-  publish:
-    if: github.repository_owner == 'liamhawtin' && github.ref == 'refs/heads/main'
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.package.outputs.version }}
+      should_publish: ${{ steps.package.outputs.should_publish }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - id: package
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if npm view "vieta-math@$version" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  verify:
+    needs: preflight
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -25,7 +49,30 @@ jobs:
       - run: npm run build
       - run: npm run build:examples
       - run: npm run test:browser
+      - run: npm run pack:check
+
+  publish:
+    needs: [preflight, verify]
+    if: github.repository_owner == 'liamhawtin' && needs.preflight.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm ci
       - run: npm publish --provenance --access public
-      - run: gh workflow run pages.yml --ref main -f package_version="$(node -p "require('./package.json').version")"
+
+  deploy-pages:
+    needs: [preflight, verify, publish]
+    if: >-
+      always() && github.repository_owner == 'liamhawtin' &&
+      needs.verify.result == 'success' &&
+      (needs.preflight.outputs.should_publish != 'true' || needs.publish.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh workflow run pages.yml --ref main -f package_version="${{ needs.preflight.outputs.package_version }}"
         env:
           GH_TOKEN: ${{ github.token }}
