@@ -14,6 +14,11 @@ Try the [live VietaMath demos](https://liamhawtin.github.io/vieta-math/): a
 standalone input, a theme override example, and a ProseMirror editor are all
 available in the browser.
 
+[![VietaSpace math editing walkthrough](https://raw.githubusercontent.com/liamhawtin/vieta-math/main/assets/vieta-math-demo.gif)](https://liamhawtin.github.io/vieta-math/)
+
+This walkthrough shows VietaSpace editing mathematics in the browser. The live
+demo site uses the published VietaMath package.
+
 The published package is [vieta-math on npm](https://www.npmjs.com/package/vieta-math).
 
 ## Install

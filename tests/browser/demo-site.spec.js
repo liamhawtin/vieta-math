@@ -19,6 +19,20 @@ test("standalone demo mounts and exports LaTeX", async ({ page }) => {
   expect(missingFonts).toEqual([]);
 });
 
+test("home page presents the VietaSpace identity and walkthrough", async ({ page }) => {
+  const failures = [];
+  page.on("response", response => {
+    if (/vieta-space-logo|favicon|vieta-math-demo/.test(response.url()) && response.status() >= 400) {
+      failures.push(`${response.status()} ${response.url()}`);
+    }
+  });
+  await page.goto("/");
+  await expect(page.locator(".wordmark img")).toHaveAttribute("src", "./favicon-64x64.png");
+  await expect(page.locator(".brand-lockup")).toBeVisible();
+  await expect(page.locator(".product-preview source")).toHaveAttribute("src", "./vieta-math-demo.mp4");
+  expect(failures).toEqual([]);
+});
+
 test("standalone Tab opens the shared Smart Menu", async ({ page }) => {
   await page.goto("/standalone.html");
   const editor = page.locator(".interactive-mathml");
