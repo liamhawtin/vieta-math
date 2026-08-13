@@ -12,14 +12,14 @@ test("standalone demo mounts and exports LaTeX", async ({ page }) => {
   await page.goto("/standalone.html");
   await expect(page.locator(".interactive-mathml")).toBeVisible();
   await expect.poll(() => page.evaluate(() => document.fonts.check('16px "Latin Modern Math Upright"'))).toBe(true);
-  await page.getByRole("button", { name: "Show export" }).click();
+  await page.getByRole("button", { name: "Show LaTeX" }).click();
   await expect(page.locator("pre")).toContainText("int");
   await expect(page.getByText("Desktop browser and physical keyboard required.")).toHaveCount(0);
   expect(errors).toEqual([]);
   expect(missingFonts).toEqual([]);
 });
 
-test("home page presents the VietaSpace identity and walkthrough", async ({ page }) => {
+test("home page presents a focused VietaMath preview and walkthrough", async ({ page }) => {
   const failures = [];
   page.on("response", response => {
     if (/vieta-space-logo|favicon|vieta-math-demo/.test(response.url()) && response.status() >= 400) {
@@ -27,9 +27,12 @@ test("home page presents the VietaSpace identity and walkthrough", async ({ page
     }
   });
   await page.goto("/");
-  await expect(page.locator(".wordmark img")).toHaveAttribute("src", "./favicon-64x64.png");
-  await expect(page.locator(".brand-lockup")).toBeVisible();
+  await expect(page.locator(".wordmark")).toHaveText("VietaMath");
+  await expect(page.locator(".wordmark img")).toHaveCount(0);
+  await expect(page.locator(".product-provenance")).toContainText("VietaMath by VietaSpace");
+  await expect(page.locator(".try-editor .interactive-mathml")).toBeVisible();
   await expect(page.locator(".product-preview source")).toHaveAttribute("src", "./vieta-math-demo.mp4");
+  await expect(page.locator(".product-preview video")).toHaveAttribute("poster", "./vieta-math-demo-poster.png");
   expect(failures).toEqual([]);
 });
 
@@ -111,5 +114,7 @@ test("ProseMirror Smart Menu is anchored to the caret in the viewport", async ({
   const menuBox = await menu.boundingBox();
   expect(caretBox).not.toBeNull();
   expect(menuBox).not.toBeNull();
-  expect(Math.abs(menuBox.y - (caretBox.y + caretBox.height + 10))).toBeLessThanOrEqual(2);
+  const opensBelow = Math.abs(menuBox.y - (caretBox.y + caretBox.height + 10)) <= 2;
+  const opensAbove = Math.abs((menuBox.y + menuBox.height + 10) - caretBox.y) <= 2;
+  expect(opensBelow || opensAbove).toBe(true);
 });

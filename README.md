@@ -11,8 +11,8 @@ directly instead of being treated as ordinary text.
 
 The package renders MathML from editable LaTeX and keeps source ranges on the
 rendered structure. That lets the editor place a caret, navigate, select, and
-modify the expression in the browser. It can be used as a standalone React
-input or as inline math inside a ProseMirror document.
+modify the expression in the browser. It can be mounted as a standalone input
+or used as inline math inside a ProseMirror document.
 
 Try the [live VietaMath demos](https://liamhawtin.github.io/vieta-math/): a
 standalone input, a theme override example, and a ProseMirror editor are all
@@ -27,23 +27,23 @@ The published package is [vieta-math on npm](https://www.npmjs.com/package/vieta
 
 ## Install
 
-VietaMath renders through React. React and ReactDOM are peer dependencies, so
-an existing React application normally needs only the package itself:
+VietaMath does not require your application to use React. The editor currently
+uses React internally, however, so React and ReactDOM must be available at
+runtime. With npm 7 or later, installing VietaMath normally adds them for you:
 
 ```sh
 npm install vieta-math
 ```
 
-With npm 7 or later, npm resolves missing peer dependencies during that
-install. In a new application, or when peers are not already present, install a
-compatible React pair explicitly:
+If your package manager does not add them automatically, install a compatible
+React pair explicitly:
 
 ```sh
 npm install vieta-math react react-dom
 ```
 
-VietaMath supports React 18 and 19. It needs a browser DOM, so create editor
-instances only in client-side code or in a React effect.
+VietaMath supports React 18 and 19 internally. It needs a browser DOM, so
+create editor instances only in client-side code.
 
 ### Device support
 
@@ -88,6 +88,15 @@ Pass each shared-UI container to the editor as well. That lets the editor keep
 its active state while a menu or pad takes focus. The Smart Menu positions
 itself against the viewport, so its mount can be an ordinary empty element in
 the same application view; it does not need host-specific overlay CSS.
+
+#### Smart Menu alignment
+
+Mount the Smart Menu in a normal, empty element and pass that same element as
+`smartMenuContainer`. Do not place it inside an absolutely positioned wrapper
+or try to position it from your host CSS: VietaMath measures the active caret
+against the viewport and places the menu itself, flipping above the caret when
+there is not enough room below. This is the arrangement used by the standalone
+and ProseMirror examples.
 
 See the runnable standalone example in
 [`examples/standalone`](examples/standalone).
@@ -216,6 +225,7 @@ request.
 
 ## Maintainer wanted
 
-Liam Hawtin owns and currently maintains VietaMath. He is also looking for a
-maintainer or long-term collaborator who wants to help shape the project. If
-that interests you, email liamhawtin@gmail.com.
+Current maintainer: Liam Hawtin.
+
+Interested in becoming a long-term maintainer or collaborator and helping
+shape the project? Email liamhawtin@gmail.com.
