@@ -1,9 +1,13 @@
 name: Deploy demo site
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      package_version:
+        description: Published vieta-math version to demonstrate
+        required: true
+        default: "1.0.0"
+        type: string
 
 permissions:
   contents: read
@@ -21,14 +25,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20.19
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npm run build --workspace=@vietamath/demo-site
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm install --prefix examples/site --no-save vieta-math@${{ inputs.package_version }}
+      - run: npm run build --prefix examples/site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
