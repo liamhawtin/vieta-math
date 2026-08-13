@@ -11,7 +11,6 @@ jobs:
   publish:
     if: github.repository_owner == 'liamhawtin'
     runs-on: ubuntu-latest
-    environment: npm
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
