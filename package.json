@@ -1,6 +1,6 @@
 {
   "name": "vieta-math",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": false,
   "workspaces": [
     "latex-math-engine",
@@ -76,8 +76,8 @@
     "uuid": "^11.1.0"
   },
   "peerDependencies": {
-    "react": ">=18 <20",
-    "react-dom": ">=18 <20"
+    "react": ">=18 <19",
+    "react-dom": ">=18 <19"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",

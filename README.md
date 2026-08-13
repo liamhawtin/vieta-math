@@ -42,7 +42,7 @@ React pair explicitly:
 npm install vieta-math react react-dom
 ```
 
-VietaMath supports React 18 and 19 internally. It needs a browser DOM, so
+VietaMath currently supports React 18 internally. It needs a browser DOM, so
 create editor instances only in client-side code.
 
 ### Device support
