@@ -10,7 +10,7 @@
   "dependencies": {
     "vieta-math": "file:../..",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "vite": "^8.2.1"

@@ -95,7 +95,7 @@
     "prosemirror-markdown": "^1.13.4",
     "prosemirror-state": "^1.4.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.2.8",
     "sass": "^1.69.0",
     "sass-embedded": "^1.91.0",
     "sass-loader": "^16.0.5",
