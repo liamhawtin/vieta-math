@@ -73,6 +73,6 @@ jobs:
       (needs.preflight.outputs.should_publish != 'true' || needs.publish.result == 'success')
     runs-on: ubuntu-latest
     steps:
-      - run: gh workflow run pages.yml --ref main -f package_version="${{ needs.preflight.outputs.package_version }}"
+      - run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main -f package_version="${{ needs.preflight.outputs.package_version }}"
         env:
           GH_TOKEN: ${{ github.token }}
