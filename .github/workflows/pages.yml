@@ -25,8 +25,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -34,7 +34,7 @@ jobs:
       - run: npm install --prefix examples/site --no-save vieta-math@${{ inputs.package_version }}
       - run: npm run build --prefix examples/site
       - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: examples/site/dist
       - id: deployment
