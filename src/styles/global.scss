@@ -64,12 +64,6 @@ $vieta-theme: (
   @include vieta-map-theme(light);
 }
 
-@media (prefers-color-scheme: dark) {
-  .vieta-root {
-    @include vieta-map-theme(dark);
-  }
-}
-
 [data-theme="light"] .vieta-root {
   @include vieta-map-theme(light);
 }

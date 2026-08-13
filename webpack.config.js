@@ -98,10 +98,12 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
-          type: 'asset/resource',
-          generator: {
-            filename: 'fonts/[name][ext]'
-          }
+          // The ESM entry is commonly bundled by tools such as Vite. Unlike a
+          // direct UMD script, that bundling step cannot discover Webpack's
+          // runtime font URLs and would otherwise omit the custom math font.
+          // Keep the UMD assets external, but make the ESM entry self-contained.
+          type: isModule ? 'asset/inline' : 'asset/resource',
+          generator: isModule ? {} : { filename: 'fonts/[name][ext]' }
         }
       ]
     },

@@ -138,11 +138,14 @@ contract is CSS custom properties in two layers:
 - `.vieta-root .interactive-mathml` controls direct math interaction: caret,
   selection, overlays, borders, and related MathML states.
 
-Defaults follow the system color scheme. An ancestor with `data-theme="light"`
-or `data-theme="dark"` selects a fixed default. To apply a host theme, override
-the variables on the VietaMath root and, where needed, on its interactive math
-element. Package styles are injected at runtime, so use `!important` when the
-host stylesheet is loaded first:
+The unconfigured default is light. An ancestor with `data-theme="light"` or
+`data-theme="dark"` selects a fixed palette explicitly; VietaMath does not
+silently change theme only because the operating system prefers dark mode. If a
+host follows the system preference, it should update that attribute on its own
+application root so its editor and surrounding surface always agree. To apply a
+host theme, override the variables on the VietaMath root and, where needed, on
+its interactive math element. Package styles are injected at runtime, so use
+`!important` when the host stylesheet is loaded first:
 
 ```css
 .course-editor .vieta-root {

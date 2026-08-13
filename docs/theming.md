@@ -4,8 +4,12 @@ VietaMath is styled through CSS custom properties. The package injects its own
 CSS at runtime, which makes the editor self-contained but affects the cascade:
 when a host stylesheet loads first, add `!important` to host overrides.
 
-The defaults respond to the system color scheme. Put `data-theme="light"` or
-`data-theme="dark"` on an ancestor to select a fixed default theme.
+The unconfigured default is light. Put `data-theme="light"` or
+`data-theme="dark"` on an ancestor to select a palette explicitly. VietaMath
+does not switch itself to dark only because the operating system prefers dark
+mode; that prevents a dark editor from appearing inside a host application that
+is intentionally light. A host that follows the system preference should set
+the attribute on its own application root as that preference changes.
 
 ```css
 .my-math-surface .vieta-root {
