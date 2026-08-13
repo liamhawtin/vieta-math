@@ -56,6 +56,8 @@ UIRegistry.mountSmartMenu(smartMenu);
 const editor = new VietaMath(document.querySelector("#math-input"), {
   initialContent: String.raw`\int_0^1 x^2\,dx`,
   focusOnInit: true,
+  symbolPadContainer: symbolPad,
+  smartMenuContainer: smartMenu,
   onChange(rawLatex) {
     console.log(rawLatex);
   },
@@ -73,6 +75,10 @@ UIRegistry.unmountSmartMenu();
 `getSanitizedLatex()` returns LaTeX prepared for copying, saving, or passing to
 another tool. The shared UI registry has one mount point for each optional UI;
 mount it once for the host view and unmount it when that view goes away.
+Pass each shared-UI container to the editor as well. That lets the editor keep
+its active state while a menu or pad takes focus. The Smart Menu positions
+itself against the viewport, so its mount can be an ordinary empty element in
+the same application view; it does not need host-specific overlay CSS.
 
 See the runnable standalone example in
 [`examples/standalone`](examples/standalone).
@@ -141,13 +147,16 @@ contract is CSS custom properties in two layers:
   selection, overlays, borders, and related MathML states.
 
 The unconfigured default is light. An ancestor with `data-theme="light"` or
-`data-theme="dark"` selects a fixed palette explicitly; VietaMath does not
-silently change theme only because the operating system prefers dark mode. If a
-host follows the system preference, it should update that attribute on its own
-application root so its editor and surrounding surface always agree. To apply a
-host theme, override the variables on the VietaMath root and, where needed, on
-its interactive math element. Package styles are injected at runtime, so use
-`!important` when the host stylesheet is loaded first:
+`data-theme="dark"` selects a fixed palette explicitly. VietaMath does not
+infer dark mode from the browser setting: a light host stays light even when a
+visitor's browser prefers dark mode. If the application follows the system
+preference, update its own root attribute and its surrounding colors together.
+Do not put `data-theme="dark"` on only the editor inside an otherwise light
+page; that makes the editor look broken even though the host has chosen two
+different themes. To apply a host theme, override the variables on the
+VietaMath root and, where needed, on its interactive math element. Package
+styles are injected at runtime, so use `!important` when the host stylesheet is
+loaded first:
 
 ```css
 .course-editor .vieta-root {
@@ -195,3 +204,9 @@ before redistributing the package.
 Focused bug reports, tests, documentation improvements, and integration fixes
 are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull
 request.
+
+## Maintainer wanted
+
+Liam Hawtin owns and currently maintains VietaMath. He is also looking for a
+maintainer or long-term collaborator who wants to help shape the project. If
+that interests you, email liamhawtin@gmail.com.

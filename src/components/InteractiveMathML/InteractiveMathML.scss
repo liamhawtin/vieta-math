@@ -58,12 +58,6 @@ $mm-theme: (
   @include mm-map-theme(light);
 }
 
-@media (prefers-color-scheme: dark) {
-  .vieta-root .interactive-mathml {
-    @include mm-map-theme(dark);
-  }
-}
-
 [data-theme="light"] .vieta-root .interactive-mathml {
   @include mm-map-theme(light);
 }

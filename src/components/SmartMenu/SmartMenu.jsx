@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useSmartMenuStore, useMathStore, useEditorStore } from '@stores/StoreContext';
 import { TeXProcessor as TP } from '@utils/TeXProcessor';
@@ -234,14 +234,6 @@ function SmartMenu() {
   const smartMenuStore = useSmartMenuStore();
   const editorStore = useEditorStore();
   const inputRef = useRef(null);
-  const [overlayRect, setOverlayRect] = useState(null);
-
-  const setOverlayRef = useCallback((node) => {
-    if (node) {
-      setOverlayRect(node.getBoundingClientRect());
-    }
-  }, []);
-
   // Auto-focus input when menu opens
   useEffect(() => {
     if (smartMenuStore.isOpen && inputRef.current) {
@@ -267,28 +259,32 @@ function SmartMenu() {
     const menuHeight = 400;
     const padding = 10;
 
-    const overlayLeft = overlayRect?.left ?? 0;
-    const overlayTop = overlayRect?.top ?? 0;
+    const gap = 10;
+    const minMenuHeight = 220;
+    const availableBelow = window.innerHeight - y - gap - padding;
+    const availableAbove = y - gap - padding;
 
-    /* ---------- Vertical ---------- */
-    let top = y - overlayTop + 10;
-    const maxTop = window.innerHeight - menuHeight - padding - overlayTop;
-
-    if (top > maxTop) {
-      top = Math.max(maxTop, padding);
+    let top;
+    let height;
+    if (availableBelow >= minMenuHeight || availableBelow >= availableAbove) {
+      top = y + gap;
+      height = Math.min(menuHeight, Math.max(availableBelow, 1));
+    } else {
+      height = Math.min(menuHeight, Math.max(availableAbove, 1));
+      top = y - gap - height;
     }
 
     /* ---------- Horizontal ---------- */
-  const leftAlign = x - overlayLeft + padding;
-  const rightAlign = x - overlayLeft - menuWidth - padding;
-  const wouldOverflowRight = x + menuWidth + padding > window.innerWidth;
-  const left = wouldOverflowRight ? rightAlign : leftAlign;
+    const leftAlign = x + padding;
+    const rightAlign = x - menuWidth - padding;
+    const wouldOverflowRight = x + menuWidth + padding > window.innerWidth;
+    const left = wouldOverflowRight ? rightAlign : leftAlign;
 
     return {
       position: 'absolute',
       top: `${top}px`,
       width: `${menuWidth}px`,
-      height: `${menuHeight}px`,
+      height: `${height}px`,
       display: 'flex',
       flexDirection: 'column',
       left: `${left}px`,
@@ -301,7 +297,6 @@ function SmartMenu() {
 
   return (
     <div
-      ref={setOverlayRef}
       className="vieta-root smart-menu-overlay"
     >
       <div
