@@ -1,5 +1,9 @@
 # VietaMath
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/liamhawtin/vieta-math/main/assets/vieta-space-mark.png" width="104" alt="VietaSpace" />
+</p>
+
 VietaMath is a browser math editor for people working with advanced notation.
 It is designed for university-level mathematics and beyond: fractions, scripts,
 matrices, limits, delimiters, and other structured expressions can be edited
