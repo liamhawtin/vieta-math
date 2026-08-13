@@ -10,6 +10,10 @@ rendered structure. That lets the editor place a caret, navigate, select, and
 modify the expression in the browser. It can be used as a standalone React
 input or as inline math inside a ProseMirror document.
 
+Try the [live VietaMath demos](https://liamhawtin.github.io/vieta-math/): a
+standalone input, a theme override example, and a ProseMirror editor are all
+available in the browser.
+
 ## Install
 
 VietaMath renders through React. React and ReactDOM are peer dependencies, so
@@ -157,8 +161,8 @@ host stylesheet is loaded first:
 }
 ```
 
-Read the complete variable reference in [theming.md](docs/theming.md). The
-hosted theme demo is linked from the project site once it is published.
+Read the complete variable reference in [theming.md](docs/theming.md). You can
+also change both variable layers in the [hosted theme demo](https://liamhawtin.github.io/vieta-math/theme.html).
 
 ## Development
 
