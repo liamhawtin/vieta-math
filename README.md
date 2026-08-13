@@ -1,45 +1,51 @@
 # VietaMath
 
-VietaMath is an interactive math editor for the web. It stores an editable
-LaTeX expression, renders it as MathML, and keeps source ranges on the rendered
-nodes. This lets a user move a caret through fractions, scripts, matrices,
-limits, delimiters, and other mathematical structures.
+VietaMath is a browser math editor for people working with advanced notation.
+It is designed for university-level mathematics and beyond: fractions, scripts,
+matrices, limits, delimiters, and other structured expressions can be edited
+directly instead of being treated as ordinary text.
 
-The project supports two uses:
-
-- a standalone math input;
-- inline math nodes inside a ProseMirror document.
-
-VietaMath was developed privately as part of VietaSpace. It is now being
-prepared for community use. The Notes service and its backend are separate and
-are not part of this repository.
-
-## Status
-
-The public release is under preparation. The npm package name is
-`@liamhawtin/vieta-math`. Version 1.1.0 has not been published yet.
+The package renders MathML from editable LaTeX and keeps source ranges on the
+rendered structure. That lets the editor place a caret, navigate, select, and
+modify the expression in the browser. It can be used as a standalone React
+input or as inline math inside a ProseMirror document.
 
 ## Install
 
-```sh
-npm install @liamhawtin/vieta-math react react-dom
-```
-
-For the ProseMirror integration, install the ProseMirror packages used by your
-editor as well:
+VietaMath renders through React. React and ReactDOM are peer dependencies, so
+an existing React application normally needs only the package itself:
 
 ```sh
-npm install prosemirror-history prosemirror-inputrules prosemirror-keymap \
-  prosemirror-model prosemirror-state prosemirror-view
+npm install vieta-math
 ```
 
-VietaMath needs a browser DOM. Create editor instances in client-side code or
-inside a React effect.
+With npm 7 or later, npm resolves missing peer dependencies during that
+install. In a new application, or when peers are not already present, install a
+compatible React pair explicitly:
+
+```sh
+npm install vieta-math react react-dom
+```
+
+VietaMath supports React 18 and 19. It needs a browser DOM, so create editor
+instances only in client-side code or in a React effect.
+
+### Device support
+
+VietaMath is built for desktop-class browsers and a proper physical keyboard.
+Phones are not supported in this release. The editing model relies on keyboard
+navigation and does not provide a phone-first touch interface.
 
 ## Standalone input
 
 ```js
-import { VietaMath, UIRegistry } from "@liamhawtin/vieta-math";
+import { UIRegistry, VietaMath } from "vieta-math";
+
+const symbolPad = document.querySelector("#symbol-pad");
+const smartMenu = document.querySelector("#smart-menu");
+
+UIRegistry.mountSymbolPad(symbolPad);
+UIRegistry.mountSmartMenu(smartMenu);
 
 const editor = new VietaMath(document.querySelector("#math-input"), {
   initialContent: String.raw`\int_0^1 x^2\,dx`,
@@ -49,40 +55,47 @@ const editor = new VietaMath(document.querySelector("#math-input"), {
   },
 });
 
-UIRegistry.mountSymbolPad(document.querySelector("#symbol-pad"));
-UIRegistry.mountSmartMenu(document.querySelector("#smart-menu"));
-
 const latexForExport = editor.getSanitizedLatex();
 
-// Later:
+// When the host view is removed:
 editor.destroy();
 UIRegistry.unmountSymbolPad();
 UIRegistry.unmountSmartMenu();
 ```
 
 `getLatex()` returns VietaMath's editable internal form.
-`getSanitizedLatex()` returns cleaner LaTeX for copying, saving outside the
-editor, or sending to another tool. See the complete React example in
+`getSanitizedLatex()` returns LaTeX prepared for copying, saving, or passing to
+another tool. The shared UI registry has one mount point for each optional UI;
+mount it once for the host view and unmount it when that view goes away.
+
+See the runnable standalone example in
 [`examples/standalone`](examples/standalone).
 
-## ProseMirror integration
+## ProseMirror
 
-Add `vietaMathNodes` to your schema. Install the VietaMath plugin and input
-rules. Register the node view when you construct `EditorView`.
+The `vieta-math/prosemirror` entry supplies the schema node, plugins,
+commands, and node view. Its implementation is bundled with the package. Your
+application still owns its ProseMirror editor, schema, and view, so install the
+ProseMirror packages used to make that editor. The basic example uses:
+
+```sh
+npm install prosemirror-history prosemirror-model prosemirror-schema-basic \
+  prosemirror-state prosemirror-view
+```
 
 ```js
+import { history } from "prosemirror-history";
 import { Schema } from "prosemirror-model";
+import { schema as basicSchema } from "prosemirror-schema-basic";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { schema as basicSchema } from "prosemirror-schema-basic";
-import { history } from "prosemirror-history";
-import { VietaMath } from "@liamhawtin/vieta-math";
+import { VietaMath } from "vieta-math";
 import {
   createVietaMathNodeView,
   vietaMathInputRulesPlugin,
   vietaMathNodes,
   vietaMathPlugin,
-} from "@liamhawtin/vieta-math/prosemirror";
+} from "vieta-math/prosemirror";
 
 const schema = new Schema({
   nodes: basicSchema.spec.nodes.append(vietaMathNodes),
@@ -106,38 +119,46 @@ const view = new EditorView(document.querySelector("#document-editor"), {
 });
 ```
 
-Type `$` followed by a space to insert a math node, or call
-`insertVietaMath(schema)` from a command or button. The example in
-[`examples/prosemirror`](examples/prosemirror) includes shared symbol-pad and
-smart-menu containers. It follows the integration used by VietaSpace Notes and
-Leibniz without their product code.
+Typing a complete `$latex$` expression converts it to an inline VietaMath node.
+You can also call `insertVietaMath(schema)` from a command or button. The
+runnable ProseMirror example in [`examples/prosemirror`](examples/prosemirror)
+shows the optional shared symbol-pad and smart-menu mounts.
 
-## LaTeX processing
+## Styling and themes
 
-Input LaTeX goes through `expandString` in the internal LaTeX math engine. This
-normalizes macros and structures into a stable editing form. Among other jobs,
-it normalizes delimiters and arrays, adds explicit empty script positions where
-the editor needs them, and keeps editor markers deterministic.
+VietaMath injects its component styles with the JavaScript bundle. Its visual
+contract is CSS custom properties in two layers:
 
-The renderer is a modified KaTeX 0.16.18 engine. It creates MathML with
-`data-range-start` and `data-range-end` attributes. `EditorStore` uses those
-ranges to map pointer and keyboard actions back to the LaTeX string.
+- `.vieta-root` controls the surrounding UI: backgrounds, text, borders,
+  shadows, accents, spacing, radii, and typography.
+- `.vieta-root .interactive-mathml` controls direct math interaction: caret,
+  selection, overlays, borders, and related MathML states.
 
-When content is copied or exported, `exportString` performs the reverse-facing
-cleanup. It expands editor-only export macros, joins adjacent font commands,
-normalizes arrays, and removes formatting artifacts. It produces LaTeX intended
-for people and other math tools.
+Defaults follow the system color scheme. An ancestor with `data-theme="light"`
+or `data-theme="dark"` selects a fixed default. To apply a host theme, override
+the variables on the VietaMath root and, where needed, on its interactive math
+element. Package styles are injected at runtime, so use `!important` when the
+host stylesheet is loaded first:
 
-The main responsibilities in the code are:
+```css
+.course-editor .vieta-root {
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f8f9fa !important;
+  --text-primary: #212529 !important;
+  --border-color: #dee2e6 !important;
+  --brand-primary: #405d63 !important;
+  --brand-primary-rgb: 64, 93, 99 !important;
+}
 
-- `VietaMath` owns one mounted editor and its public lifecycle.
-- `RootStore` creates the stores for that editor instance.
-- `MathStore` owns the LaTeX string and structural insertions.
-- `EditorStore` owns selection, caret movement, editing commands, paste, copy,
-  and interaction with rendered MathML.
-- `SymbolStore` owns symbol-pad data, recent symbols, and symbol preferences.
-- `TeXProcessor` handles editor-side LaTeX inspection and array changes.
-- `latex-math-engine` parses, normalizes, renders, and exports LaTeX.
+.course-editor .vieta-root .interactive-mathml {
+  --mm-caret: #004288 !important;
+  --mm-selection: rgba(0, 123, 255, 0.2) !important;
+  --mm-border-medium: rgba(0, 0, 0, 0.18) !important;
+}
+```
+
+Read the complete variable reference in [theming.md](docs/theming.md). The
+hosted theme demo is linked from the project site once it is published.
 
 ## Development
 
@@ -149,32 +170,19 @@ cd vieta-math
 npm ci
 npm test
 npm run build
-```
-
-The root install includes the internal engine workspace. The root build always
-rebuilds that engine before bundling VietaMath. It does not depend on another
-local repository or a prebuilt ignored directory.
-
-Build the examples after the package:
-
-```sh
-npm run build
 npm run build:examples
 ```
 
+The root build rebuilds the internal LaTeX engine before bundling VietaMath.
 Run `npm run pack:check` to inspect the files that would enter the npm package.
 
-## License
+## License and contributing
 
-VietaMath code is released under the MIT License. The rendering engine contains
-modified KaTeX code under the MIT License. Bundled Latin Modern and Libertinus
-font material uses separate font licenses. Read [NOTICE](NOTICE) and
-[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) before redistributing the
-package.
+VietaMath code is released under the MIT License. The rendering engine includes
+modified KaTeX code under the MIT License; bundled fonts have separate licenses.
+Read [NOTICE](NOTICE) and [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
+before redistributing the package.
 
-## Contributing
-
-Bug reports, focused fixes, tests, and documentation improvements are welcome.
-See [CONTRIBUTING.md](CONTRIBUTING.md). The project would also benefit from
-people interested in long-term maintenance of math editing, MathML, and LaTeX
-processing.
+Focused bug reports, tests, documentation improvements, and integration fixes
+are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull
+request.

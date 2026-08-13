@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { UIRegistry, VietaMath } from "@liamhawtin/vieta-math";
+import { UIRegistry, VietaMath } from "vieta-math";
 import "./styles.css";
 
 function StandaloneExample() {

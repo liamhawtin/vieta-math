@@ -1,6 +1,6 @@
 {
-  "name": "@liamhawtin/vieta-math",
-  "version": "1.1.0",
+  "name": "vieta-math",
+  "version": "1.0.0",
   "private": false,
   "workspaces": [
     "latex-math-engine",
@@ -16,11 +16,15 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
     },
     "./prosemirror": {
       "types": "./dist/vieta-math-prosemirror.d.ts",
-      "default": "./dist/vieta-math-prosemirror.js"
+      "import": "./dist/vieta-math-prosemirror.mjs",
+      "require": "./dist/vieta-math-prosemirror.js",
+      "default": "./dist/vieta-math-prosemirror.mjs"
     }
   },
   "files": [
@@ -38,11 +42,12 @@
     "build:engine": "npm run build --workspace=latex-math-engine",
     "generate": "node scripts/generate-symbol-data.js",
     "prebuild": "npm run build:engine && npm run generate",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production && webpack --env module --mode production",
     "build:dev": "npm run build:engine && npm run generate && webpack --mode development",
     "dev": "npm run build:dev",
     "test": "npm test --workspace=latex-math-engine",
-    "build:examples": "npm run build --workspace=@vietamath/example-standalone --workspace=@vietamath/example-prosemirror",
+    "test:browser": "playwright test",
+    "build:examples": "npm run build --workspace=@vietamath/example-standalone --workspace=@vietamath/example-prosemirror --workspace=@vietamath/demo-site",
     "pack:check": "npm pack --dry-run",
     "prepublishOnly": "npm test && npm run build"
   },
@@ -79,6 +84,7 @@
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/preset-env": "^7.22.20",
     "@babel/preset-react": "^7.22.15",
+    "@playwright/test": "^1.62.1",
     "babel-loader": "^9.1.3",
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^6.8.1",

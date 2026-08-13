@@ -582,7 +582,7 @@
       }
 
       &:not(.active) {
-        background: var(--bg-primary)3e0;
+        background: rgba(245, 124, 0, 0.12);
         border-color: #f57c00;
         color: #e65100;
 
@@ -677,7 +677,7 @@
   // Delimiter toolbar specific styles
   .dissolve-button {
     &:hover:not(:disabled) {
-      background: var(--bg-primary)3cd;
+      background: rgba(255, 193, 7, 0.12);
       outline-color: #ffc107;
       color: #856404;
     }

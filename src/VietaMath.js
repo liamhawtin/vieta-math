@@ -113,14 +113,10 @@ export class UIRegistry {
   }
 }
 
-// Counter for unique instance IDs
-let instanceCounter = 0;
-
 export class VietaMath {
 
   constructor(containerOrSelector, options = {}) {
     this.options = {
-      theme: 'default',
       symbolPadContainer: null,
       toolbarContainer: null,
       smartMenuContainer: null,
@@ -133,9 +129,9 @@ export class VietaMath {
       ...options
     };
 
-    this.toolbarContainer = this.options.toolbarContainer || null;
-    this.symbolPadContainer = this.options.symbolPadContainer || null;
-    this.smartMenuContainer = this.options.smartMenuContainer || null;
+    this.toolbarContainer = this._resolveContainer(this.options.toolbarContainer);
+    this.symbolPadContainer = this._resolveContainer(this.options.symbolPadContainer);
+    this.smartMenuContainer = this._resolveContainer(this.options.smartMenuContainer);
 
     // Get container element
     if (typeof containerOrSelector === 'string') {
@@ -241,7 +237,7 @@ export class VietaMath {
 
   blur() {
     if (this.rootStore.editorStore?.editorRef) {
-      //this.rootStore.editorStore.editorRef.blur();
+      this.rootStore.editorStore.editorRef.blur();
     }
   }
 

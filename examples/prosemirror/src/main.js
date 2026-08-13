@@ -3,13 +3,13 @@ import { Schema } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { UIRegistry, VietaMath } from "@liamhawtin/vieta-math";
+import { UIRegistry, VietaMath } from "vieta-math";
 import {
   createVietaMathNodeView,
   vietaMathInputRulesPlugin,
   vietaMathNodes,
   vietaMathPlugin,
-} from "@liamhawtin/vieta-math/prosemirror";
+} from "vieta-math/prosemirror";
 import "prosemirror-view/style/prosemirror.css";
 import "./styles.css";
 

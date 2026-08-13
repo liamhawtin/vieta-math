@@ -4,7 +4,7 @@ import { keydownHandler } from "prosemirror-keymap";
 import { MarkdownSerializer, defaultMarkdownSerializer, MarkdownParser, defaultMarkdownParser } from "prosemirror-markdown";
 import MarkdownIt from "markdown-it";
 import lme from "lme";
-import { registry } from "@liamhawtin/vieta-math";
+import { registry } from "vieta-math";
 import { insertVietaMath, exitActiveVietaMath, ensureMathLineVisible, getVietaMathNodePosition } from './vietaMathCommands'
 
 const isFirefox = /firefox/i.test(navigator.userAgent);
@@ -81,8 +81,16 @@ function createMarkdownParser(schema) {
 
   addVietaInlineMath(md);
 
+  const supportedTokens = Object.fromEntries(
+    Object.entries(defaultMarkdownParser.tokens).filter(([, spec]) =>
+      (!spec.node || schema.nodes[spec.node]) &&
+      (!spec.block || schema.nodes[spec.block]) &&
+      (!spec.mark || schema.marks[spec.mark])
+    )
+  );
+
   return new MarkdownParser(schema, md, {
-    ...defaultMarkdownParser.tokens,
+    ...supportedTokens,
 
     vieta_math_inline: {
       node: "vieta_math_inline",

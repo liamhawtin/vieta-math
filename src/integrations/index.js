@@ -1,6 +1,6 @@
 import './styles.scss';
 
-import { registry } from "@liamhawtin/vieta-math";
+import { registry } from "vieta-math";
 
 export { vietaMathNodes } from './ProseMirrorSchema';
 export { vietaMathPlugin } from './ProseMirrorPlugin';

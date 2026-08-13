@@ -1,4 +1,4 @@
-import { registry } from "@liamhawtin/vieta-math";
+import { registry } from "vieta-math";
 import { closeHistory } from "prosemirror-history";
 import { ensureMathLineVisible } from './vietaMathCommands'
 

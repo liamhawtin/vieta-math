@@ -8,7 +8,6 @@ export class UIRegistry {
 }
 
 export interface VietaMathOptions {
-  theme?: string;
   initialContent?: string;
   allowBoundaryExit?: boolean;
   focusOnInit?: boolean;
@@ -17,7 +16,14 @@ export interface VietaMathOptions {
   onChange?: (rawLatex: string) => void;
   toolbarContainer?: HTMLElement | string | null;
   instanceId?: string;
-  externalActions?: Record<string, unknown> | null;
+  externalActions?: VietaMathExternalActions | null;
+}
+
+export interface VietaMathExternalActions {
+  insertSymbol?: (initialLatex: string) => unknown;
+  onCaretInserted?: () => void;
+  onSetSelection?: (selection: unknown) => void;
+  methods?: Record<string, (...args: unknown[]) => unknown>;
 }
 
 export class VietaMath {
@@ -30,7 +36,7 @@ export class VietaMath {
   setLatex(latex: string, pushToStack?: boolean, expand?: boolean): void;
   focus(): void;
   blur(): void;
-  getStores(): any;
+  getStores(): unknown;
   destroy(): void;
 }
 

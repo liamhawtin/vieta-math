@@ -18,7 +18,7 @@
       --selection-text-color: inherit;
     }
   } @else {
-    --selection-unfocused-color: rgba(256, 256, 256, 0.68);
+    --selection-unfocused-color: rgba(255, 255, 255, 0.68);
     --selection-unfocused-text-color: HighlightText;
 
     --fake-caret-color: #e8e8e8;

@@ -5,6 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = (env, argv) => {
   const mode = process.env?.MODE || argv.mode || 'development';
   const isDev = mode === 'development';
+  const isModule = Boolean(env?.module);
 
   return {
     mode,
@@ -14,17 +15,22 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js',
-      library: {
+      filename: isModule ? '[name].mjs' : '[name].js',
+      library: isModule ? { type: 'module' } : {
         name: 'VietaMath',
         type: 'umd'
       },
       globalObject: 'this',
-      clean: true
+      clean: !isModule
     },
     devtool: isDev ? 'source-map' : false,
 
+    externalsType: isModule ? 'module' : 'var',
     externals: ({ request }, callback) => {
+      if (isModule && ['react', 'react-dom', 'react-dom/client', 'vieta-math'].includes(request)) {
+        return callback(null, request);
+      }
+
       // React externals (both bundles)
       if (request === 'react') {
         return callback(null, {
@@ -54,11 +60,11 @@ module.exports = (env, argv) => {
       }
 
       // Core as external ONLY for prosemirror entry
-      if (request === '@liamhawtin/vieta-math') {
+      if (request === 'vieta-math') {
         return callback(null, {
-          commonjs: '@liamhawtin/vieta-math',
-          commonjs2: '@liamhawtin/vieta-math',
-          amd: '@liamhawtin/vieta-math',
+          commonjs: 'vieta-math',
+          commonjs2: 'vieta-math',
+          amd: 'vieta-math',
           root: 'VietaMath'
         });
       }
@@ -127,6 +133,8 @@ module.exports = (env, argv) => {
         }),
       ],
     },
+
+    experiments: isModule ? { outputModule: true } : {},
 
     plugins: [
       new CopyPlugin({

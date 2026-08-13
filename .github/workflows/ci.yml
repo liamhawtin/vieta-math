@@ -18,7 +18,9 @@ jobs:
           node-version: 20.19
           cache: npm
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run build
       - run: npm run build:examples
+      - run: npm run test:browser
       - run: npm run pack:check

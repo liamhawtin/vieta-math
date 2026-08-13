@@ -1,4 +1,4 @@
-import { registry } from "@liamhawtin/vieta-math";
+import { registry } from "vieta-math";
 
 export function getVietaMathNodePosition(state, instanceId) {
   if (!instanceId) return null;
