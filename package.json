@@ -67,7 +67,7 @@
   "bugs": {
     "url": "https://github.com/liamhawtin/vieta-math/issues"
   },
-  "homepage": "https://github.com/liamhawtin/vieta-math#readme",
+  "homepage": "https://liamhawtin.github.io/vieta-math/",
   "dependencies": {
     "@tabler/icons-react": "^3.26.0",
     "mobx": "^6.10.2",
