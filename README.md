@@ -250,3 +250,8 @@ Current maintainer: Liam Hawtin.
 
 Interested in becoming a long-term maintainer or collaborator and helping
 shape the project? Email liamhawtin@gmail.com.
+
+## Support VietaMath
+
+If VietaMath is useful to you, you can support its maintenance through
+[GitHub Sponsors](https://github.com/sponsors/liamhawtin).
