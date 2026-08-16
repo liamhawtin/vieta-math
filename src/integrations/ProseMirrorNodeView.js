@@ -83,9 +83,9 @@ class VietaMathInlineView {
     return true;
   }
 
-  stopEvent(event) {
-    // doesn't do anything, wrong id check, but it doesn't matter
-    return registry.getActiveId() === this.id;
+  stopEvent(_event) {
+    // ProseMirror must leave events inside the active embedded editor alone.
+    return registry.getActiveId() === this.instanceId;
   }
 
   ignoreMutation(_mutation) {

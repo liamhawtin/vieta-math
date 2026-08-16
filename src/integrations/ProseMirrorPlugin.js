@@ -247,7 +247,7 @@ export const vietaMathPlugin = (schema) => {
         } else {
 
           // Ignore selections outside this ProseMirror view
-          const anchor = sel.anchorNode.parentElement;;
+          const anchor = sel.anchorNode.parentElement;
           if (!view.dom.contains(anchor)) return;
 
           // Find enclosing VietaMath wrapper, if any
