@@ -7,7 +7,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -65,12 +65,30 @@ jobs:
       - run: npm ci
       - run: npm publish --provenance --access public
 
-  deploy-pages:
+  github_release:
     needs: [preflight, verify, publish]
+    if: >-
+      github.repository_owner == 'liamhawtin' &&
+      needs.preflight.outputs.should_publish == 'true' &&
+      needs.publish.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - run: >-
+          gh release create "v${{ needs.preflight.outputs.package_version }}"
+          --repo "$GITHUB_REPOSITORY"
+          --target "$GITHUB_SHA"
+          --title "v${{ needs.preflight.outputs.package_version }}"
+          --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  deploy-pages:
+    needs: [preflight, verify, publish, github_release]
     if: >-
       always() && github.repository_owner == 'liamhawtin' &&
       needs.verify.result == 'success' &&
-      (needs.preflight.outputs.should_publish != 'true' || needs.publish.result == 'success')
+      (needs.preflight.outputs.should_publish != 'true' ||
+      (needs.publish.result == 'success' && needs.github_release.result == 'success'))
     runs-on: ubuntu-latest
     steps:
       - run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main -f package_version="${{ needs.preflight.outputs.package_version }}"
