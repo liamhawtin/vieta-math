@@ -73,7 +73,7 @@
     "@tabler/icons-react": "^3.26.0",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.5",
-    "uuid": "^11.1.0"
+    "uuid": "^14.0.2"
   },
   "peerDependencies": {
     "react": ">=18 <19",
